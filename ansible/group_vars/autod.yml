@@ -8,8 +8,8 @@ datacenter: "AutoD"
 cluster: "R720s"
 datastore: "autoD"
 folder: "Auto_FC"
-net_1Gbit: "1G"
-net_10Gbit: "10G"
+net_1Gbit: "1GB"
+net_10Gbit: "10GB"
 
 vm_name: "fc_vm_01"
 

@@ -11,10 +11,6 @@ pipeline {
 			type: 'PT_CHECKBOX',
 			value: 'NS-530,NS-521,Firecrest-lates,Ubuntu18,Ubuntu20',
 			visibleItemCount: 5)
-		choice(
-			name: 'ESX',
-			choices: ['esx-224','esx-247'],
-			description: 'Select ESX')
 		text(
 			name: 'VMC',
 			description: 'VM count per platform-protocol',
@@ -59,7 +55,6 @@ pipeline {
 									extraVars:	[
 										vm_name:	"${params.Prefix}-${params.ESX}-${VM}",
 										VMC:		"${params.VMC}",
-										esx_host:	"${params.ESX}",
 										MAC_j:		"MAC_${VM}"
 									]
 								])
