@@ -123,7 +123,8 @@
 
     when: "(vm_state is not defined) and ((vm_name | regex_search('Centos')) or (vm_name | regex_search('Ubuntu'))) "
 
-
+  hosts: all
+  tasks:
   - name: TCM VMs - "{{vm_state}}"
     community.vmware.vmware_guest:
       hostname: "{{vcenter_hostname}}"
