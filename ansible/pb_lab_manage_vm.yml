@@ -24,7 +24,7 @@
         validate_certs: no
         datacenter: "{{datacenter}}"
         folder: "{{folder}}"
-        name: "{{vm_name}}"
+        name: "{{vmpref}}-{{vm_name}}"
         state: poweredon
         guest_id: otherGuest64
         disk:
@@ -82,7 +82,7 @@
         validate_certs: no
         datacenter: "{{datacenter}}"
         folder: "{{folder}}"
-        name: "{{vm_name}}-{{item}}"
+        name: "{{vmpref}}-{{vm_name}}-{{item}}"
         state: poweredon
         guest_id: otherGuest64
         disk:
