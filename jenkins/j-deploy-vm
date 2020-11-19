@@ -68,8 +68,8 @@ pipeline {
 									installation:   'ansible',
 									credentialsId:	'tcm-pas',
 									inventory:      "inv.vmware.yml",
-									playbook:       'pb_lab_manage_vm_host_name.yml',
-									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}-*"
+									playbook:       'pb_lab_manage_vm_hostname.yml',
+									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
 								])
 							}
 						}
