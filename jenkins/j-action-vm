@@ -25,22 +25,18 @@ pipeline {
 			}
 		}
 		stage('ActionVMs') {
-			stages {
-				stage('Deploy VM') {
-					steps {
-						dir("${WORKSPACE1}/ansible") {
-							ansiblePlaybook([
-								installation:	'ansible',
-								inventory:	'inv.vmware.yml',
-								playbook:	'pb_lab_manage_vm.yml',
-								extraVars:	[
-									vm_state:	"${params.VM_state}"
-								],
-								extras:         "-l *${params.Pattern}*"
+			steps {
+				dir("${WORKSPACE1}/ansible") {
+					ansiblePlaybook([
+						installation:	'ansible',
+						inventory:	'inv.vmware.yml',
+						playbook:	'pb_lab_manage_vm.yml',
+						extraVars:	[
+							vm_state:	"${params.VM_state}"
+						],
+						extras:         "-l *${params.Pattern}*"
 
-							])
-						}
-					}
+					])
 				}
 			}
 		}
