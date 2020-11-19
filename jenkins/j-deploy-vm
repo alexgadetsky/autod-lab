@@ -2,14 +2,14 @@
 pipeline {
 	parameters {
 		extendedChoice(
-			defaultValue: 'Firecrest-lates',
+			defaultValue: 'Firecrest-latest',
 			description: 'VMs',
 			multiSelectDelimiter: ',',
 			name: 'VM_FILTER',
 			quoteValue: false,
 			saveJSONParameterToFile: false,
 			type: 'PT_CHECKBOX',
-			value: 'NS-530,NS-521,Firecrest-lates,Ubuntu18,Ubuntu20',
+			value: 'NS-530,NS-521,Firecrest-latest,Ubuntu18,Ubuntu20',
 			visibleItemCount: 5)
 		text(
 			name: 'VMC',
