@@ -49,10 +49,10 @@
           num_cpus: 4
           scsi: lsilogic
         networks:
-        - name: "{{10Gbit_net}}"
+        - name: "{{net_10Gbit}}"
           mac: "{{ MAC | community.general.random_mac }}"
           device_type: vmxnet3
-        - name: "{{1Gbit_net}}"
+        - name: "{{net_1Gbit}}"
           device_type: vmxnet3
         wait_for_ip_address: yes
         wait_for_ip_address_timeout: 3000
@@ -96,10 +96,10 @@
           num_cpus: 4
           scsi: paravirtual
         networks:
-        - name: "{{10Gbit_net}}"
+        - name: "{{net_10Gbit}}"
           device_type: vmxnet3
           mac: "{{ MAC | community.general.random_mac }}"
-        - name: "{{1Gbit_net}}"
+        - name: "{{net_1Gbit}}"
           mac: "{{ MAC3 | community.general.random_mac }}"
           device_type: vmxnet3
         wait_for_ip_address: yes
