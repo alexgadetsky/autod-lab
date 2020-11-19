@@ -1,0 +1,13 @@
+- include_tasks: apt.yml
+  when: ansible_pkg_mgr == 'apt'
+- include_tasks: yum.yml
+  when: ansible_pkg_mgr == 'yum'
+- include_tasks: dnf.yml
+  when: ansible_pkg_mgr == 'dnf'
+  #- name: Configure for vdbench
+  #  service: name=rpcbind state=started
+- name: Include waiter for install
+  include_tasks: includes/_wait_for_asynchronous_job2end.yml
+  vars:
+    list_of_results: "{{ [install_sleeper] }}"
+
