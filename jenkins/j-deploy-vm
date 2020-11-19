@@ -34,7 +34,7 @@ pipeline {
 				script {
 					WORKSPACE1 = WORKSPACE
 				}
-				git url: 'git@github.com:alexgadetsky/autod-lab.git'
+				git branch: 'main', url: 'git@github.com:alexgadetsky/autod-lab.git'
 			}
 		}
 		stage('DeployVMs') {
