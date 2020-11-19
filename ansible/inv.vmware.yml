@@ -1,0 +1,17 @@
+plugin: community.vmware.vmware_vm_inventory
+strict: False
+hostname: "vcenter.hypernexenta.corp"
+username: "Administrator@vsphere.local"
+password: "Nexenta1!"
+validate_certs: False
+with_tags: False
+filters:
+        #    - runtime.powerState == "poweredOn"
+    - config.name | regex_search('autoD')
+properties:
+        #        - 'name'
+        - 'config.name'
+        - 'guest.ipAddress'
+        - 'guest.hostName'
+hostnames:
+        - 'config.name'
