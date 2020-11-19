@@ -65,7 +65,7 @@
         password: "{{vcenter_password}}"
         validate_certs: no
         datacenter: "{{datacenter}}"
-        name: "{{vm_name}}"
+        name: "{{vmpref}}-{{vm_name}}"
       register: get_vm_info
     - debug:
          msg: "VM IP is {{get_vm_info.instance.ipv4}}"
