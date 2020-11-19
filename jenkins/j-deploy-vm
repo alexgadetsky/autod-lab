@@ -53,7 +53,7 @@ pipeline {
 									inventory:	'inventory',
 									playbook:	'pb_lab_manage_vm.yml',
 									extraVars:	[
-										vm_name:	"${params.Prefix}-${VM}",
+										vm_name:	"${params.Prefix}-${env.BUILD_ID}-${VM}",
 										VMC:		"${params.VMC}",
 										MAC_j:		"MAC_${VM}"
 									]
