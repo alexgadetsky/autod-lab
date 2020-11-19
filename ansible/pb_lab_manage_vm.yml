@@ -23,6 +23,7 @@
         password: "{{vcenter_password}}"
         validate_certs: no
         datacenter: "{{datacenter}}"
+        esxi_hostname: "{{esx_host}}.{{domain}}"
         folder: "{{folder}}"
         name: "{{vmpref}}-{{vm_name}}"
         state: poweredon
@@ -81,6 +82,7 @@
         password: "{{vcenter_password}}"
         validate_certs: no
         datacenter: "{{datacenter}}"
+        esxi_hostname: "{{esx_host}}.{{domain}}"
         folder: "{{folder}}"
         name: "{{vmpref}}-{{vm_name}}-{{item}}"
         state: poweredon
