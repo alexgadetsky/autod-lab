@@ -1,0 +1,164 @@
+---
+- name: Deploy and configure VMs
+  gather_facts: false
+  hosts: localhost
+  user: root
+  vars_files:
+     group_vars/autod.yml
+  vars:
+    patt: "tcm"
+    VMC: 1
+    MAC: "{{MAC4}}"
+    vm_create_sleeper: []
+  
+  tasks:
+  - name: Create a virtual test machine and take IP
+    block:
+    - set_fact:
+        MAC: "{{ lookup('vars', MAC_j)}}"
+    - name: Create a FireCrest VM
+      community.vmware.vmware_guest:
+        hostname: "{{vcenter_hostname}}"
+        username: "{{vcenter_username}}"
+        password: "{{vcenter_password}}"
+        validate_certs: no
+        datacenter: "{{datacenter}}"
+        folder: "{{folder}}"
+        name: "{{vm_name}}"
+        state: poweredon
+        guest_id: otherGuest64
+        disk:
+        - size_gb: 20
+          type: thin
+          datastore: "{{datastore}}"
+        - size_gb: 10
+          type: thin
+          datastore: "{{datastore}}" 
+        - size_gb: 10
+          type: thin
+          datastore: "{{datastore}}" 
+        - size_gb: 10
+          type: thin
+          datastore: "{{datastore}}" 
+        - size_gb: 10
+          type: thin
+          datastore: "{{datastore}}" 
+        hardware:
+          memory_mb: 10240
+          num_cpus: 4
+          scsi: lsilogic
+        networks:
+        - name: "{{10Gbit_net}}"
+          mac: "{{ MAC | community.general.random_mac }}"
+          device_type: vmxnet3
+        - name: "{{1Gbit_net}}"
+          device_type: vmxnet3
+        wait_for_ip_address: yes
+        wait_for_ip_address_timeout: 3000
+      register: createvm_out
+
+    - name: Get IP
+      community.vmware.vmware_guest_info:
+        hostname: "{{vcenter_hostname}}"
+        username: "{{vcenter_username}}"
+        password: "{{vcenter_password}}"
+        validate_certs: no
+        datacenter: "{{datacenter}}"
+        name: "{{vm_name}}"
+      register: get_vm_info
+    - debug:
+         msg: "VM IP is {{get_vm_info.instance.ipv4}}"
+    when: "(vm_state is not defined) and ((vm_name | regex_search('Firecrest')) or (vm_name | regex_search('NS')))"
+
+  - name: Create a virtual client machine and take IP
+    block:
+    - set_fact:
+        MAC: "{{ lookup('vars', MAC_j)}}"
+    - name: Create a Linux VM
+      community.vmware.vmware_guest:
+        hostname: "{{vcenter_hostname}}"
+        username: "{{vcenter_username}}"
+        password: "{{vcenter_password}}"
+        validate_certs: no
+        datacenter: "{{datacenter}}"
+        folder: "{{folder}}"
+        name: "{{vm_name}}-{{item}}"
+        state: poweredon
+        guest_id: otherGuest64
+        disk:
+        - size_gb: 40
+          type: thin
+          datastore: "{{datastore}}"
+        hardware:
+          memory_mb: 4096
+          num_cpus: 4
+          scsi: paravirtual
+        networks:
+        - name: "{{10Gbit_net}}"
+          device_type: vmxnet3
+          mac: "{{ MAC | community.general.random_mac }}"
+        - name: "{{1Gbit_net}}"
+          mac: "{{ MAC3 | community.general.random_mac }}"
+          device_type: vmxnet3
+        wait_for_ip_address: yes
+        wait_for_ip_address_timeout: 3000
+      async: 3000
+      poll: 0
+      loop: "{{range(1,VMC|int+1) | list }}"
+      register: _vm_create_sleeper
+
+    - set_fact:
+        vm_create_sleeper: "{{ vm_create_sleeper + _vm_create_sleeper.results }}"
+
+    - name: Wait for asynchronous job to end
+      async_status:
+        jid: '{{ item.ansible_job_id }}'
+      register: job_result
+      until: job_result.finished
+      retries: 50
+      delay: 60
+      loop: "{{vm_create_sleeper}}"
+
+    when: "(vm_state is not defined) and ((vm_name | regex_search('Centos')) or (vm_name | regex_search('Ubuntu'))) "
+
+
+  - name: Delete a virtual machine on given ESXi hostname
+    block:
+    - name: Get VM list
+      community.vmware.vmware_vm_info:
+        hostname: "{{vcenter_hostname}}"
+        username: "{{vcenter_username}}"
+        password: "{{vcenter_password}}"
+        validate_certs: no
+      delegate_to: localhost
+      register: vminfo
+
+    - name: TCM VMs - "{{vm_state}}"
+      community.vmware.vmware_guest:
+        hostname: "{{vcenter_hostname}}"
+        username: "{{vcenter_username}}"
+        password: "{{vcenter_password}}"
+        validate_certs: no
+        datacenter: "{{datacenter}}"
+        folder: "{{folder}}"
+        name: "{{item.guest_name}}"
+        state: "{{vm_state}}"
+        force: yes
+      delegate_to: localhost
+      loop: "{{vminfo.virtual_machines}}"
+      when: patt in item.guest_name
+      async: 300
+      poll: 0
+      register: vm_sleeper
+
+    - name: Wait for asynchronous job to end
+      async_status:
+        jid: '{{ item.ansible_job_id }}'
+      register: job_result
+      until: job_result.finished
+      retries: 50
+      delay: 20
+      when: item.ansible_job_id is defined
+      loop: "{{vm_sleeper.results}}"
+    when: vm_state is defined
+

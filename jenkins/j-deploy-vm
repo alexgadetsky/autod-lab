@@ -1,0 +1,70 @@
+#!groovy
+pipeline {
+	parameters {
+		extendedChoice(
+			defaultValue: 'Firecrest-lates',
+			description: 'VMs',
+			multiSelectDelimiter: ',',
+			name: 'VM_FILTER',
+			quoteValue: false,
+			saveJSONParameterToFile: false,
+			type: 'PT_CHECKBOX',
+			value: 'NS-530,NS-521,Firecrest-lates,Ubuntu18,Ubuntu20',
+			visibleItemCount: 5)
+		choice(
+			name: 'ESX',
+			choices: ['esx-224','esx-247'],
+			description: 'Select ESX')
+		text(
+			name: 'VMC',
+			description: 'VM count per platform-protocol',
+			defaultValue: '1')
+	}
+	agent any
+	environment {
+		WORKSPACE1 = ""
+	}
+	stages {
+		stage('GitClone') {
+			steps {
+				script {
+					WORKSPACE1 = WORKSPACE
+				}
+				git url: 'git@github.com:alexgadetsky/autod-lab.git'
+			}
+		}
+		stage('DeployVMs') {
+			matrix {
+				when {
+					expression { params.VM_FILTER =~ env.VM }
+				}
+				axes {
+					axis {
+						name 'VM'
+						values 'NS-530', 'NS-521', 'Firecrest-latest', 'Ubuntu20', 'Ubuntu18'
+					}
+				}
+				stages {
+					stage('Deploy VM') {
+						steps {
+							dir("${WORKSPACE1}/ansible") {
+								ansiblePlaybook([
+									installation:	'ansible',
+									inventory:	'inventory',
+									playbook:	'pb_lab_manage_vm.yml',
+									extraVars:	[
+										vm_name:	"${ESX}-${VM}",
+										VMC:		"${VMC}",
+										esx_host:	"${ESX}",
+										MAC_j:		"MAC_${VM}"
+									]
+								])
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
