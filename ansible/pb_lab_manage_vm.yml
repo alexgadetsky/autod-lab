@@ -124,43 +124,17 @@
     when: "(vm_state is not defined) and ((vm_name | regex_search('Centos')) or (vm_name | regex_search('Ubuntu'))) "
 
 
-  - name: Delete a virtual machine on given ESXi hostname
-    block:
-    - name: Get VM list
-      community.vmware.vmware_vm_info:
-        hostname: "{{vcenter_hostname}}"
-        username: "{{vcenter_username}}"
-        password: "{{vcenter_password}}"
-        validate_certs: no
-      delegate_to: localhost
-      register: vminfo
-
-    - name: TCM VMs - "{{vm_state}}"
-      community.vmware.vmware_guest:
-        hostname: "{{vcenter_hostname}}"
-        username: "{{vcenter_username}}"
-        password: "{{vcenter_password}}"
-        validate_certs: no
-        datacenter: "{{datacenter}}"
-        folder: "{{folder}}"
-        name: "{{item.guest_name}}"
-        state: "{{vm_state}}"
-        force: yes
-      delegate_to: localhost
-      loop: "{{vminfo.virtual_machines}}"
-      when: patt in item.guest_name
-      async: 300
-      poll: 0
-      register: vm_sleeper
-
-    - name: Wait for asynchronous job to end
-      async_status:
-        jid: '{{ item.ansible_job_id }}'
-      register: job_result
-      until: job_result.finished
-      retries: 50
-      delay: 20
-      when: item.ansible_job_id is defined
-      loop: "{{vm_sleeper.results}}"
+  - name: TCM VMs - "{{vm_state}}"
+    community.vmware.vmware_guest:
+      hostname: "{{vcenter_hostname}}"
+      username: "{{vcenter_username}}"
+      password: "{{vcenter_password}}"
+      validate_certs: no
+      datacenter: "{{datacenter}}"
+      folder: "{{folder}}"
+      name: "{{inventory_hostname}}"
+      state: "{{vm_state}}"
+      force: yes
+    delegate_to: localhost
     when: vm_state is defined
 
