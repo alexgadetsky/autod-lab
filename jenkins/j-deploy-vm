@@ -77,6 +77,19 @@ pipeline {
 				}
 			}
 		}
+		stage('NAS configure') {
+			steps {
+				dir("${WORKSPACE1}/ansible") {
+					ansiblePlaybook([
+						installation:   'ansible',
+						credentialsId:	'tcm-root',
+						inventory:      "inv.vmware.yml",
+						playbook:       'pb_lab_nas_test.yml',
+						extras:		"-l *${env.BUILD_ID}-${params.Prefix}*"
+					])
+				}
+			}
+		}
 	}
 }
 

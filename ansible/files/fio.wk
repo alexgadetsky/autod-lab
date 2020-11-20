@@ -22,8 +22,8 @@ size=1g
 #filename=/fio-mnt/fio02
 #filename=/fio-test/fio02
 [job1]
-filename=/mnt/nas/nfs3/fio04
+filename=/mnt/nas/nfs3/"{{inventory_hostname}}"
 [job2]
-filename=/mnt/nas/nfs4/fio04
+filename=/mnt/nas/nfs4/"{{inventory_hostname}}"
 [job3]
-filename=/mnt/nas/nfs41/fio04
+filename=/mnt/nas/nfs41/"{{inventory_hostname}}"
