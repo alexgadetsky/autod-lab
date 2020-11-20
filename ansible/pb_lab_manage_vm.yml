@@ -124,6 +124,7 @@
     when: "(vm_state is not defined) and ((vm_name | regex_search('Centos')) or (vm_name | regex_search('Ubuntu'))) "
 
 - name: Action
+  gather_facts: false
   hosts: all
   user: root
   vars_files:
