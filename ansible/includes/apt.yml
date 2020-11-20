@@ -1,14 +1,15 @@
 - name: Install pkgs
   apt:
     name:
-        - unzip
-        - openjdk-8-jre
-        - csh
         - nfs-common
         - cifs-utils
         - rpcbind
         - autofs
-        - open-iscsi
+        - fio
+          #- openjdk-8-jre
+          #- open-iscsi
+          #- csh
+          #- unzip
     state: present 
   async: 1000
   poll: 0
