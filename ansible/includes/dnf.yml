@@ -1,0 +1,16 @@
+- name: install pkgs
+  yum:
+    name: 
+      - unzip
+      - java-1.8.0-openjdk
+      - csh
+      - nfs-utils
+      - cifs-utils
+      - rpcbind
+      - autofs
+      - iscsi-initiator-utils
+      - tcpdump
+    state: latest
+  async: 1000
+  poll: 0
+  register: install_sleeper

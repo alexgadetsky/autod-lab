@@ -1,0 +1,16 @@
+- name: Install pkgs
+  apt:
+    name:
+        - unzip
+        - openjdk-8-jre
+        - csh
+        - nfs-common
+        - cifs-utils
+        - rpcbind
+        - autofs
+        - open-iscsi
+    state: present 
+  async: 1000
+  poll: 0
+  register: install_sleeper
+
