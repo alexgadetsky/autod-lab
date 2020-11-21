@@ -12,7 +12,7 @@
          cacheable: yes
 
      - name: Configure storate - create pool
-       shell: zpool create -f data mirror c2t1d0 c2t2d0
+       shell: zpool create -f data mirror c1t1d0 c1t2d0
 
      - name: Configure storate - create datasets for NFS
        shell: "zfs create data/{{item}}"
@@ -36,7 +36,7 @@
 
      - name: shareall
        shell: shareall
-     when: "{{vm_name | regex_search('Firecrest')}}"
+     when: "{{inventory_hostname | regex_search('Firecrest')}}"
 
    - block: 
      - name: Create the mount point
