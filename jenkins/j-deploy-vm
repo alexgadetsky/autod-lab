@@ -19,6 +19,11 @@ pipeline {
 			name: 'Prefix',
 			description: 'Enter something uniq for grouping VMs',
 			defaultValue: 'for-smth')
+		choice(
+			name: 'ClusterVar',
+			choices: ['autod','i40'],
+			description: '')
+
 	}
 	agent any
 	environment {
@@ -56,7 +61,8 @@ pipeline {
 										vm_name:	"${env.BUILD_ID}-${params.Prefix}-${VM}",
 										VMC:		"${params.VMC}",
 										MAC_j:		"MAC_${VM}"
-									]
+									],
+									extras:		"-e '@${params.ClusterVAR}'"
 								])
 							}
 						}
@@ -67,7 +73,7 @@ pipeline {
 								ansiblePlaybook([
 									installation:   'ansible',
 									credentialsId:	'tcm-root',
-									inventory:      "inv.vmware.yml",
+									inventory:      "inv.${params.ClusterVAR}.vmware.yml",
 									playbook:       'pb_lab_manage_vm_hostname.yml',
 									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
 								])
@@ -85,6 +91,9 @@ pipeline {
 						credentialsId:	'tcm-root',
 						inventory:      "inv.vmware.yml",
 						playbook:       'pb_lab_nas_test.yml',
+						extraVars:      [
+                                                         mut:        "${env.BUILD_ID}-${params.Prefix}-Firecrest-latest"
+						]
 						extras:		"-l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}

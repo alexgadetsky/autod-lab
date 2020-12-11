@@ -1,0 +1,9 @@
+datacenter: "KRD"
+cluster: "i40"
+folder: "i40"
+net_1Gbit: "1GB"
+net_10Gbit: "DPortGroup"
+
+vm_name: "fc_vm_01"
+
+vmpref: "i40"

@@ -15,3 +15,9 @@ properties:
         - 'guest.hostName'
 hostnames:
         - 'config.name'
+groups:
+   NFS: config.name | regex_search('nfs')
+   SMB: config.name | regex_search('smb')
+   iSCSI: config.name | regex_search('iscsi')
+   Local: config.name | regex_search('local')
+
