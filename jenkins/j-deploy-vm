@@ -93,7 +93,7 @@ pipeline {
 						playbook:       'pb_lab_nas_test.yml',
 						extraVars:      [
                                                          mut:        "${env.BUILD_ID}-${params.Prefix}-Firecrest-latest"
-						]
+						],
 						extras:		"-l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}
