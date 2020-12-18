@@ -62,7 +62,7 @@ pipeline {
 										VMC:		"${params.VMC}",
 										MAC_j:		"MAC_${VM}"
 									],
-									extras:		-e "@${params.ClusterVAR}"
+									extras:		"-e @${params.ClusterVAR}"
 								])
 							}
 						}
