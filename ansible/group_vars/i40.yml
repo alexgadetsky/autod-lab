@@ -1,4 +1,10 @@
-datacenter: "KRD"
+domain: "nexenta.local"
+
+vcenter_hostname: "vcenter.nexenta.local"
+vcenter_username: "Administrator@vsphere.local"
+vcenter_password: "Nexenta1!"
+
+datacenter: "SC"
 cluster: "i40"
 folder: "i40"
 net_1Gbit: "1GB"
