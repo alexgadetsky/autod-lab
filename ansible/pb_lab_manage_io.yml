@@ -13,7 +13,7 @@
     when: "ansible_hostname | regex_search('local')" 
 
   - name: Run vdbench task
-    shell: fio --output fio.log fio_local.wk
+    shell: fio --output fio.log fio.wk
     async: 4000000
     poll: 0
     register: vdbench
