@@ -57,12 +57,12 @@ pipeline {
 									installation:	'ansible',
 									inventory:	'inventory',
 									playbook:	'pb_lab_manage_vm.yml',
-									extras:		"-e @group_vars/${params.ClusterVar}.yml",
-									extraVars:	[
+									extras:		"-e @group_vars/${params.ClusterVar}.yml -e vm_name=${env.BUILD_ID}-${params.Prefix}-${VM} -e VMC=${params.VMC} -e MAC_j=MAC_${VM}"
+/*									extraVars:	[
 										vm_name:	"${env.BUILD_ID}-${params.Prefix}-${VM}",
 										VMC:		"${params.VMC}",
 										MAC_j:		"MAC_${VM}"
-									]
+									] */
 								])
 							}
 						}
