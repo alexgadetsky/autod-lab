@@ -99,9 +99,9 @@
         - name: "{{net_10Gbit}}"
           device_type: vmxnet3
           mac: "{{ MAC | community.general.random_mac }}"
-        - name: "{{net_1Gbit}}"
-          mac: "{{ MAC3 | community.general.random_mac }}"
-          device_type: vmxnet3
+          #        - name: "{{net_1Gbit}}"
+          #          mac: "{{ MAC3 | community.general.random_mac }}"
+          #          device_type: vmxnet3
         wait_for_ip_address: yes
         wait_for_ip_address_timeout: 3000
       async: 3000
