@@ -57,7 +57,7 @@ pipeline {
 									installation:	'ansible',
 									inventory:	'inventory',
 									playbook:	'pb_lab_manage_vm.yml',
-									extras:		"-e @${params.ClusterVAR}",
+									extras:		"-e @${params.ClusterVar}",
 									extraVars:	[
 										vm_name:	"${env.BUILD_ID}-${params.Prefix}-${VM}",
 										VMC:		"${params.VMC}",
@@ -73,7 +73,7 @@ pipeline {
 								ansiblePlaybook([
 									installation:   'ansible',
 									credentialsId:	'tcm-root',
-									inventory:      "inv.${params.ClusterVAR}.vmware.yml",
+									inventory:      "inv.${params.ClusterVar}.vmware.yml",
 									playbook:       'pb_lab_manage_vm_hostname.yml',
 									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
 								])
