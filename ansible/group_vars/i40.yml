@@ -43,6 +43,10 @@ ha_nodes_x11-2:
         esx-59: 'iqn.1998-01.com.vmware:esx-59-3cd11c6a'
      vm_net: "DPortGroup"
 
+ha_nodes_d: "{{ ha_nodes_x11-2 }}"
+
+ha_nodes: ['{{ha_nodes_d.nodes.H1.name}}','{{ha_nodes_d.nodes.H2.name}}']
+
 #IPs
 vip1: "{{ha_nodes_d.vips[0]}}" 
 vip2: "{{ha_nodes_d.vips[1]}}"
