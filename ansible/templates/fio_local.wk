@@ -15,8 +15,8 @@ iodepth=2
 numjobs=12
 direct=1
 rw=readwrite
-rwmixread=30
-rwmixwrite=70
+rwmixread=90
+rwmixwrite=10
 size=10g
 #[workload]
 [job1]
