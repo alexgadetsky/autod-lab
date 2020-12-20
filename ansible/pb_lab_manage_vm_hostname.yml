@@ -15,9 +15,9 @@
   - import_tasks: includes/set_host_name.yml
     when: ansible_system == 'Linux'
 
-  - name: include install linux pkgs
-    import_tasks: includes/install_linux.yml
-    when: ansible_system == 'Linux'
+#  - name: include install linux pkgs
+#    import_tasks: includes/install_linux.yml
+#    when: ansible_system == 'Linux'
 
 
 #  - name: Insert/Update "Match User" configuration block in /etc/ssh/sshd_config
