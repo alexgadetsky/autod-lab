@@ -6,27 +6,19 @@
   vars_files:
      group_vars/all.yml
   tasks:
-  - name: Copy fio wk for local
+  - name: Copy fio wk for "{{vmtype}}"
     template:
-      src: fio_local.wk
+      src: "fio_{{vmtype}}.wk"
       dest: /root/fio.wk
-    when: "ansible_hostname | regex_search('local')" 
+#    when: "ansible_hostname | regex_search('local')" 
 
-  - name: Run vdbench task
-    shell: fio --output fio.log fio.wk
-    async: 4000000
-    poll: 0
-    register: vdbench
-    ignore_errors: yes
-
-
-#
-#  - name: Create the mount point
-#    file:
-#      path: "/mnt/nas/{{item}}"
-#      state: directory
-#      mode: 0777
-#      recurse: yes
+  - name: Create the mount point
+    file:
+      path: "/mnt/nas/{{vmtype}}"
+      state: directory
+      mode: 0777
+      recurse: yes
+    when: "(vmtype != 'local') or (vmtype != 'anfs') or (vmtype != 'asmb')"
 #    loop:
 #       - nfs3
 #       - nfs4
@@ -39,17 +31,24 @@
 #      search_regex: OpenSSH
 #      delay: 10
 #
-#  - name: Mount share NFS v3 and v4
-#    mount:
-#      name: "/mnt/nas/nfs{{item}}"
-#      src: "{{hostvars['mut']['ansible_default_ipv4.address']}}:/data/nfs{{item}}"
-#      fstype: nfs
-#      opts: "rw,sync,nfsvers={{item}}"
-#      state: mounted
-#    loop:
-#       - 3
-#       - 4
-#
+  - name: Mount share NFS v3 and v4
+    mount:
+      name: "/mnt/nas/{{vmtype}}"
+      src: "{{ share_ip }}:{{ pool_for_shares }}/nfs"
+      fstype: nfs
+      opts: "rw,sync,nfsvers={{vmtype}}[3:]"
+      state: mounted
+    when: vmtype | regex_search('nfs')
+
+  - name: Mount share (CIFS) "//{{ share_ip }}/{{ cifs_share }}{{inventory_hostname}}"
+    mount:
+      fstype: "cifs"
+      opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
+      src: "//{{ share_ip }}/{{ cifs_share }}{{inventory_hostname}}"
+      name: "/mnt/nas/{{vmtype}}"
+      state: "mounted"
+    when: vmtype | regex_search('cifs')
+
 #  - name: Mount share NFSv4.1
 #    mount:
 #      name: "/mnt/nas/nfs{{item}}"
@@ -63,3 +62,10 @@
 #      src: fio.wk
 #      dest: /root/fio.wk
 #
+  - name: Run vdbench task
+    shell: fio --output fio.log fio.wk
+    async: 4000000
+    poll: 0
+    register: vdbench
+    ignore_errors: yes
+
