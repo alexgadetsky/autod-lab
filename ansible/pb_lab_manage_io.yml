@@ -36,7 +36,7 @@
       name: "/mnt/nas/{{vmtype}}"
       src: "{{ share_ip }}:{{ pool_for_shares }}/nfs"
       fstype: nfs
-      opts: "rw,sync,nfsvers={{vmtype}}[3:]"
+      opts: "rw,sync,nfsvers={{vmtype[3:]}}"
       state: mounted
     when: vmtype | regex_search('nfs')
 
@@ -62,10 +62,10 @@
 #      src: fio.wk
 #      dest: /root/fio.wk
 #
-  - name: Run vdbench task
+  - name: Run fio task
     shell: fio --output fio.log fio.wk
     async: 4000000
     poll: 0
-    register: vdbench
+    register: fio
     ignore_errors: yes
 
