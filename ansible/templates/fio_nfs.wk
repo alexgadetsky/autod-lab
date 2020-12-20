@@ -2,6 +2,7 @@
 ioengine=libaio
 randrepeat=1
 norandommap=1
+fallocate=none
 #runtime=1d
 runtime=24h
 time_based
