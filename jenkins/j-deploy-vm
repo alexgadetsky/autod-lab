@@ -88,7 +88,7 @@ pipeline {
 									credentialsId:	'tcm-root',
 									inventory:      "inv.${params.ClusterVar}.vmware.yml",
 									playbook:       'pb_lab_manage_io.yml',
-									extras:		"-e vmtype=${params.Prefix} -l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
+									extras:		"-e @group_vars/${params.ClusterVar}.yml -e vmtype=${params.Prefix} -l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
 								])
 							}
 						}
