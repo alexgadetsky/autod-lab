@@ -20,4 +20,4 @@ rwmixwrite=70
 size=10g
 #[workload]
 [job1]
-filename=/mnt/nas/"{{vmtype}}/{{inventory_hostname}}"
+filename=/mnt/nas/{{vmtype}}/{{inventory_hostname}}
