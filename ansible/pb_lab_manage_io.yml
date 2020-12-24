@@ -50,7 +50,7 @@
     mount:
       fstype: "cifs"
       opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
-      src: "//{{ share_ip }}/{{ cifs_share }}{{inventory_hostname}}"
+      src: "//{{ share_ip }}/{{ cifs_share }}"
       name: "/mnt/nas/{{vmtype}}"
       state: "mounted"
     when: vmtype | regex_search('cifs')
