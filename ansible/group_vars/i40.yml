@@ -65,3 +65,10 @@ pool3: "tank8"
 pool_for_shares: "{{ pool2 }}"
 pool_iscsi: "{{ pool3 }}"
 
+#CIFS Option
+cifs_user: "admin"
+cifs_passwd: "nexenta"
+#cifs_share: "{{ pool_for_shares }}_smb/smb-"
+cifs_share: "{{ pool_for_shares }}_cifs"
+cifs_vers: "2.1"
+
