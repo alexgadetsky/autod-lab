@@ -32,23 +32,23 @@
         fio_file: "/mnt/nas/{{vmtype}}/{{inventory_hostname}}"
     when: vmtype = 'cifs'
 
-  - name: Configure iSCSI
-    block:
-    - name: Create new iSCSI target 
-      import_tasks: includes/iscsi/ns_conf_target_tg_hg_vol_map.yml
-    - name: Linux mkfs and mount
-      import_tasks: includes/iscsi/linux_format_xfs_mount_iscsi_disk.yml
-    - name: Enable WBC
-      import_tasks: includes/ns_lun_wbc.yml
-      delegate_to: localhost
-      run_once: True
-    - name: delete
-      import_tasks: includes/iscsi/ns_unconf.yml
-      when: delete is defined
-      ignore_errors: yes
-    - set_fact:
-        fio_file: "/mnt/san/{{inventory_hostname}}/fio.file"
-    when: vmtype = 'iscsi'
+#  - name: Configure iSCSI
+#    block:
+#    - name: Create new iSCSI target 
+#      import_tasks: includes/iscsi/ns_conf_target_tg_hg_vol_map.yml
+#    - name: Linux mkfs and mount
+#      import_tasks: includes/iscsi/linux_format_xfs_mount_iscsi_disk.yml
+#    - name: Enable WBC
+#      import_tasks: includes/ns_lun_wbc.yml
+#      delegate_to: localhost
+#      run_once: True
+#    - name: delete
+#      import_tasks: includes/iscsi/ns_unconf.yml
+#      when: delete is defined
+#      ignore_errors: yes
+#    - set_fact:
+#        fio_file: "/mnt/san/{{inventory_hostname}}/fio.file"
+#    when: vmtype = 'iscsi'
 
   - set_fact:
       fio_file: "/tmp/fio.file"
