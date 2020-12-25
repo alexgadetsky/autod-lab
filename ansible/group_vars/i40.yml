@@ -47,6 +47,10 @@ ha_nodes_d: "{{ ha_nodes_x11 }}"
 
 ha_nodes: ['{{ha_nodes_d.nodes.H1.name}}','{{ha_nodes_d.nodes.H2.name}}']
 
+nef_host: "{{ ha_nodes_d.nodes.H1.name }}"
+nef_user: admin
+nef_password: nexenta
+
 #IPs
 vip1: "{{ha_nodes_d.vips[0]}}" 
 vip2: "{{ha_nodes_d.vips[1]}}"
