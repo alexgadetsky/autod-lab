@@ -1,0 +1,40 @@
+- name: rescan iscsi sessions
+  shell: iscsiadm -m session --rescan
+
+- name: pause after rescan
+  pause:
+    seconds: 20
+
+- name: Collect linux facts
+  setup:
+    gather_subset:
+      - '!all'
+      - '!any'
+      - hardware 
+
+- name: Create a new primary partition
+  parted:
+    device: "/dev/{{ item.key }}"
+    number: 1
+    state: present
+  with_dict: "{{ ansible_devices }}"
+  when: item.value.vendor == vendor
+
+- name: Create a xfs filesystem
+  filesystem:
+    fstype: xfs
+    dev: "/dev/{{ item.key }}1"
+    force: yes
+  with_dict: "{{ ansible_devices }}"
+  when: item.value.vendor == vendor
+
+- name: Mount up Nexenta disk
+  mount:
+    path: "/mnt/nas/{{inventory_hostname}}"
+    src:  "/dev/{{ item.key }}1" 
+    fstype: xfs
+    opts: noatime,noauto
+    state: mounted
+  with_dict: "{{ ansible_devices }}"
+  when: item.value.vendor == vendor
+

@@ -1,0 +1,5 @@
+- name: log out target
+  shell: 'iscsiadm -m node -u'
+- name: delete from node
+  shell: 'iscsiadm -m node -o delete'
+

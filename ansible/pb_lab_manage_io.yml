@@ -6,68 +6,60 @@
   vars_files:
      group_vars/all.yml
   tasks:
-  - name: Copy fio wk for "{{vmtype}}"
-    template:
-      src: "fio_nas.wk"
-      dest: /root/fio.wk
-    when: "(ansible_hostname | regex_search('nfs')) or (ansible_hostname | regex_search('cifs'))" 
+  - name: Configure NFS
+    block:
+    - name: Mount share NFS v3 and v4
+      mount:
+        name: "/mnt/nas/{{vmtype}}"
+        src: "{{ share_ip }}:{{ pool_for_shares }}/nfs"
+        fstype: nfs
+        opts: "rw,sync,nfsvers={{vmtype[3:]}}"
+        state: mounted
+    - set_fact:
+        fio_file: "/mnt/nas/{{vmtype[3:]}}/{{inventory_hostname}}"
+    when: vmtype[3:] = 'nfs'
+
+  - name: Configure CIFS
+    block:
+    - name: Mount share (CIFS) "//{{ share_ip }}/{{ cifs_share }}{{inventory_hostname}}"
+      mount:
+        fstype: "cifs"
+        opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
+        src: "//{{ share_ip }}/{{ cifs_share }}"
+        name: "/mnt/nas/{{vmtype}}"
+        state: "mounted"
+    - set_fact:
+        fio_file: "/mnt/nas/{{vmtype}}/{{inventory_hostname}}"
+    when: vmtype = 'cifs'
+
+  - name: Configure iSCSI
+    block:
+    - name: Create new iSCSI target 
+      import_tasks: includes/iscsi/ns_conf_target_tg_hg_vol_map.yml
+    - name: Linux mkfs and mount
+      import_tasks: includes/iscsi/linux_format_xfs_mount_iscsi_disk.yml
+    - name: Enable WBC
+      import_tasks: includes/ns_lun_wbc.yml
+      delegate_to: localhost
+      run_once: True
+    - name: delete
+      import_tasks: includes/iscsi/ns_unconf.yml
+      when: delete is defined
+      ignore_errors: yes
+    - set_fact:
+        fio_file: "/mnt/san/{{inventory_hostname}}/fio.file"
+    when: vmtype = 'iscsi'
+
+  - set_fact:
+      fio_file: "/tmp/fio.file"
+    when: vmtype = 'local'
 
   - name: Copy fio wk for "{{vmtype}}"
     template:
-      src: "fio_local.wk"
+      src: "fio.wk"
       dest: /root/fio.wk
-    when: "ansible_hostname | regex_search('local')" 
+    when: "(vmtype != 'anfs') or (vmtype != 'asmb')" 
 
-  - name: Create the mount point
-    file:
-      path: "/mnt/nas/{{vmtype}}"
-      state: directory
-      mode: 0777
-      recurse: yes
-    when: "(vmtype != 'local') or (vmtype != 'anfs') or (vmtype != 'asmb')"
-#    loop:
-#       - nfs3
-#       - nfs4
-#       - nfs41
-#
-#  - name: Wait 300 seconds for mut port 22 to become open
-#    wait_for:
-#      port: 22
-#      host: "{{hostvars['mut']['ansible_default_ipv4.address']}}"
-#      search_regex: OpenSSH
-#      delay: 10
-#
-  - name: Mount share NFS v3 and v4
-    mount:
-      name: "/mnt/nas/{{vmtype}}"
-      src: "{{ share_ip }}:{{ pool_for_shares }}/nfs"
-      fstype: nfs
-      opts: "rw,sync,nfsvers={{vmtype[3:]}}"
-      state: mounted
-    when: vmtype | regex_search('nfs')
-
-  - name: Mount share (CIFS) "//{{ share_ip }}/{{ cifs_share }}{{inventory_hostname}}"
-    mount:
-      fstype: "cifs"
-      opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
-      src: "//{{ share_ip }}/{{ cifs_share }}"
-      name: "/mnt/nas/{{vmtype}}"
-      state: "mounted"
-    when: vmtype | regex_search('cifs')
-
-#  - name: Mount share NFSv4.1
-#    mount:
-#      name: "/mnt/nas/nfs{{item}}"
-#      src: "{{hostvars['mut']['ansible_default_ipv4.address']}}:/data/nfs41"
-#      fstype: nfs
-#      opts: "rw,sync"
-#      state: mounted
-#
-#  - name: Copy fio conf
-#    template:
-#      src: fio.wk
-#      dest: /root/fio.wk
-#
   - name: Run fio task
     shell: fio --output fio.log fio.wk
     async: 4000000
