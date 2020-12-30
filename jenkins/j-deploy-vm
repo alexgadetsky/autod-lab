@@ -21,7 +21,7 @@ pipeline {
 			defaultValue: 'for-smth')
 		choice(
 			name: 'ClusterVar',
-			choices: ['autod','i40'],
+			choices: ['autod','i40','krd'],
 			description: '')
 
 	}
