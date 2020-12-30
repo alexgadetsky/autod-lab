@@ -11,6 +11,7 @@ datastore: "ns-nfs2"
 net_1Gbit: "10x_1G_network"
 net_10Gbit: "DPortGroup"
 fc_vm_name: "fc_vm_01"
+vmpref: "lst"
 
 vendor: "NEXENTA"
 
