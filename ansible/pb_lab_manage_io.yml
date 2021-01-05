@@ -17,7 +17,7 @@
         state: mounted
     - set_fact:
         fio_file: "/mnt/nas/{{vmtype[3:]}}/{{inventory_hostname}}"
-    when: vmtype[3:] = 'nfs'
+    when: vmtype[3:] == 'nfs'
 
   - name: Configure CIFS
     block:
@@ -30,7 +30,7 @@
         state: "mounted"
     - set_fact:
         fio_file: "/mnt/nas/{{vmtype}}/{{inventory_hostname}}"
-    when: vmtype = 'cifs'
+    when: vmtype == 'cifs'
 
 #  - name: Configure iSCSI
 #    block:
@@ -52,7 +52,7 @@
 
   - set_fact:
       fio_file: "/tmp/fio.file"
-    when: vmtype = 'local'
+    when: vmtype == 'local'
 
   - name: Copy fio wk for "{{vmtype}}"
     template:
