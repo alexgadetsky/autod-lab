@@ -17,7 +17,7 @@
         state: mounted
     - set_fact:
         fio_file: "/mnt/nas/{{vmtype[3:]}}/{{inventory_hostname}}"
-    when: vmtype[3:] == 'nfs'
+      when: vmtype[:3] == 'nfs'
 
   - name: Configure CIFS
     block:
