@@ -16,7 +16,7 @@
         opts: "rw,sync,nfsvers={{vmtype[3:]}}"
         state: mounted
     - set_fact:
-        fio_file: "/mnt/nas/{{vmtype[3:]}}/{{inventory_hostname}}"
+        fio_file: "/mnt/nas/{{vmtype}}/{{inventory_hostname}}"
       when: vmtype[:3] == 'nfs'
 
   - name: Configure CIFS
