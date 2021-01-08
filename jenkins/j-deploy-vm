@@ -79,7 +79,7 @@ pipeline {
 						when {
 							expression { 
 								env.VM =~ 'Ubuntu'
-								return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+								return params.MUTisVM ==~ /(?i)(N|NO|F|FALSE|OFF)/
 							}
 						}
 						steps {

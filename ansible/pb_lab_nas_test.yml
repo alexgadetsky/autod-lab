@@ -74,7 +74,7 @@
  
      - name: Copy fio conf
        template:
-         src: fio.wk
+         src: fio_nas.wk
          dest: /root/fio.wk
      when: ansible_system == 'Linux'
  
