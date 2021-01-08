@@ -11,18 +11,10 @@ pipeline {
 			type: 'PT_CHECKBOX',
 			value: 'NS-530,NS-521,Firecrest-latest,Ubuntu18,Ubuntu20',
 			visibleItemCount: 5)
-		text(
-			name: 'VMC',
-			description: 'VM count per platform-protocol',
-			defaultValue: '1')
-		text(
-			name: 'Prefix',
-			description: 'Enter something uniq for grouping VMs',
-			defaultValue: 'for-smth')
-		choice(
-			name: 'ClusterVar',
-			choices: ['autod','i40','krd'],
-			description: '')
+		text(name: 'VMC', description: 'VM count',	defaultValue: '1')
+		text(name: 'Prefix', description: 'Grouping VMs', defaultValue: 'for-smth')
+		choice(name: 'ClusterVar', choices: ['autod','i40','krd'], description: '')
+		booleanParam(name: 'MUTisVM', defaultValue: false, description: '')
 
 	}
 	agent any
@@ -69,7 +61,7 @@ pipeline {
 					}
 					stage('Configure Linux VMs - hostname and packages') {
 						when {
-							expression { env.VM =~ 'Ubuntu'}
+							expression { env.VM =~ 'Ubuntu'	}
 						}
 						steps {
 							dir("${WORKSPACE1}/ansible") {
@@ -85,7 +77,10 @@ pipeline {
 					}
 					stage('Configure Linux VMs - fsload and fio') {
 						when {
-							expression { env.VM =~ 'Ubuntu'}
+							expression { 
+								env.VM =~ 'Ubuntu'
+								env.MUTisVM false
+							}
 						}
 						steps {
 							dir("${WORKSPACE1}/ansible") {
@@ -102,10 +97,12 @@ pipeline {
 				}
 			}
 		}
-/*		
 		stage('NAS configure') {
 			when {
-				expression { env.VM =~ 'Firecrest'}
+				expression { 
+					env.VM =~ 'Firecrest'
+					env.MUTisVM true
+				}
 			}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
@@ -122,7 +119,6 @@ pipeline {
 				}
 			}
 		}
-*/
 	}
 }
 
