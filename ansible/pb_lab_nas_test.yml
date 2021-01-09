@@ -81,7 +81,7 @@
        mount:
          fstype: cifs
          opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
-         src: "//{{ mut_ip }}/data_cifs"
+         src: "//{{ mut_ip }}/data_smb2"
          name: "/mnt/nas/smb2"
          state: mounted
      
