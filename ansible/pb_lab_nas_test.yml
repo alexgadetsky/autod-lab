@@ -32,6 +32,10 @@
 
      - name: shareall
        shell: shareall
+
+     - name: chmod
+       shell: chmod -R 777 /data/*
+
      when: inventory_hostname | regex_search('Firecrest')
 
    - block: 

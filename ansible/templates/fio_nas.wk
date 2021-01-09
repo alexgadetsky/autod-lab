@@ -2,6 +2,7 @@
 ioengine=libaio
 randrepeat=1
 norandommap=1
+fallocate=none
 #runtime=1d
 runtime=2h
 time_based
@@ -22,8 +23,8 @@ size=1g
 #filename=/fio-mnt/fio02
 #filename=/fio-test/fio02
 [job1]
-filename=/mnt/nas/nfs3/"{{inventory_hostname}}"
+filename=/mnt/nas/nfs3/{{inventory_hostname}}
 [job2]
-filename=/mnt/nas/nfs4/"{{inventory_hostname}}"
+filename=/mnt/nas/nfs4/{{inventory_hostname}}
 [job3]
-filename=/mnt/nas/nfs41/"{{inventory_hostname}}"
+filename=/mnt/nas/nfs41/{{inventory_hostname}}
