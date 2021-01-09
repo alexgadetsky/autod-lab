@@ -36,6 +36,9 @@
      - name: chmod
        shell: chmod -R 777 /data/*
 
+     - name: snapshot
+       shell: zfs snapshot -r data@1
+
      when: inventory_hostname | regex_search('Firecrest')
 
    - block: 
