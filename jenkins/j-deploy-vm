@@ -111,10 +111,7 @@ pipeline {
 						credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_nas_test.yml',
-						extraVars:      [
-                                                         mut:        "${env.BUILD_ID}-${params.Prefix}-Firecrest-latest"
-						],
-						extras:		"-l *${env.BUILD_ID}-${params.Prefix}*"
+						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-Firecrest-latest -l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}
 			}
