@@ -15,17 +15,17 @@
        loop:
          - nfs3
          - nfs4
-         - nfs41
+         - nfs4.1
+         - nfs4.2
+         - smb2
 
      - name: Configure storate - create NFS shares
        shell: "zfs set sharenfs=on data/{{item}}"
        loop:
          - nfs3
          - nfs4
-         - nfs41
-
-     - name: Configure storate - create dataset for SMB2
-       shell: zfs create data/smb2
+         - nfs4.1
+         - nfs4.2
 
      - name: Configure storate - create SMB2 share
        shell: zfs set sharesmb=on data/smb2
@@ -48,7 +48,9 @@
        loop:
           - nfs3
           - nfs4
-          - nfs41
+          - nfs4.1
+          - nfs4.2
+          - smb2
 
      - set_fact:
           mut1: "{{vmpref}}-{{mut}}"
@@ -62,7 +64,7 @@
          search_regex: OpenSSH
          delay: 10
 
-     - name: Mount share NFS v3 and v4
+     - name: Mount share NFS
        mount:
          name: "/mnt/nas/nfs{{item}}"
          src: "{{mut_ip}}:/data/nfs{{item}}"
@@ -72,14 +74,25 @@
        loop:
           - 3
           - 4
+          - 4.1
+          - 4.2
 
-     - name: Mount share NFSv4.1
+     - name: Mount share CIFS
        mount:
-         name: "/mnt/nas/nfs41"
-         src: "{{mut_ip}}:/data/nfs41"
-         fstype: nfs
-         opts: "rw,sync"
+         fstype: cifs
+         opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
+         src: "//{{ mut_ip }}/data_cifs"
+         name: "/mnt/nas/smb2"
          state: mounted
+     
+
+#     - name: Mount share NFSv4.1
+#       mount:
+#         name: "/mnt/nas/nfs41"
+#         src: "{{mut_ip}}:/data/nfs41"
+#         fstype: nfs
+#         opts: "rw,sync"
+#         state: mounted
  
      - name: Copy fio conf
        template:

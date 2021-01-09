@@ -27,4 +27,8 @@ filename=/mnt/nas/nfs3/{{inventory_hostname}}
 [job2]
 filename=/mnt/nas/nfs4/{{inventory_hostname}}
 [job3]
-filename=/mnt/nas/nfs41/{{inventory_hostname}}
+filename=/mnt/nas/nfs4.1/{{inventory_hostname}}
+[job4]
+filename=/mnt/nas/nfs4.2/{{inventory_hostname}}
+[job5]
+filename=/mnt/nas/smb2/{{inventory_hostname}}
