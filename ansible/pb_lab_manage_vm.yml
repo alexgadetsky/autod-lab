@@ -32,23 +32,23 @@
         - size_gb: 20
           type: thin
           datastore: "{{datastore}}"
-        - size_gb: 50
+        - size_gb: 60
           type: thin
           datastore: "{{datastore}}" 
-        - size_gb: 50
+        - size_gb: 60
           type: thin
           datastore: "{{datastore}}" 
-        - size_gb: 50
+        - size_gb: 60
           type: thin
           datastore: "{{datastore}}" 
-        - size_gb: 50
+        - size_gb: 60
           type: thin
           datastore: "{{datastore}}" 
-        - size_gb: 50
+        - size_gb: 60
           type: thin
           datastore: "{{datastore}}" 
         hardware:
-          memory_mb: 10240
+          memory_mb: 20480
           num_cpus: 4
           scsi: lsilogic
         networks:
