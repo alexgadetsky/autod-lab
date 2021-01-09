@@ -85,5 +85,14 @@
        template:
          src: fio_nas.wk
          dest: /root/fio.wk
+
+
+     - name: Run fio task
+       shell: fio --output fio.log fio.wk
+       async: 4000000
+       poll: 0
+       register: fio
+       ignore_errors: yes
+   
      when: ansible_system == 'Linux'
  
