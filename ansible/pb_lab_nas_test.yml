@@ -54,7 +54,7 @@
      - name: Wait 300 seconds for mut port 22 to become open
        wait_for:
          port: 22
-         host: "{{mut_ip]}}"
+         host: "{{mut_ip}}"
          search_regex: OpenSSH
          delay: 10
 
@@ -72,7 +72,7 @@
      - name: Mount share NFSv4.1
        mount:
          name: "/mnt/nas/nfs41"
-         src: "{{mut_ip]}}:/data/nfs41"
+         src: "{{mut_ip}}:/data/nfs41"
          fstype: nfs
          opts: "rw,sync"
          state: mounted
