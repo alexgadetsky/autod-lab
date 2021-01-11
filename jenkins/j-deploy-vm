@@ -100,8 +100,8 @@ pipeline {
 		stage('NAS configure') {
 			when {
 				expression { 
-					params.VM_FILTER =~ 'Firecrest' 
-					params.Prefix == 'nas'
+					return params.VM_FILTER =~ 'Firecrest' 
+					return params.Prefix == 'nas'
 					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}
 			steps {
@@ -119,8 +119,8 @@ pipeline {
 		stage('SAN configure') {
 			when {
 				expression { 
-					params.VM_FILTER =~ 'Firecrest' 
-					params.Prefix == 'san'
+					return params.VM_FILTER =~ 'Firecrest' 
+					return params.Prefix == 'san'
 					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}
 			steps {
