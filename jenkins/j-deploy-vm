@@ -120,7 +120,7 @@ pipeline {
 		stage('SAN configure') {
 			when {
 				allOf {
-					expression { env.VM =~ 'Firecrest' }
+//					expression { env.VM =~ 'Firecrest' }
 					expression { env.Prefix == 'san' }
 					expression { return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 				}
