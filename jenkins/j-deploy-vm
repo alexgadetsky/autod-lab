@@ -98,12 +98,11 @@ pipeline {
 			}
 		}
 		stage('NAS configure') {
-			when {
-				expression { 
-					return params.VM_FILTER =~ 'Firecrest' 
-					return params.Prefix == 'nas'
-					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
-			}
+			when { allOf {
+				expression { params.VM_FILTER =~ 'Firecrest' }
+				expression { params.Prefix == 'nas' }
+				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+			}}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
 					ansiblePlaybook([
