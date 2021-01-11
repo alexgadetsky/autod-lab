@@ -22,7 +22,7 @@
        shell: zpool create -f data mirror c1t1d0 c1t2d0 mirror c1t3d0 c1t4d0
 
      - name:  Configure FC iSCSI - Create TPG and taret
-       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 | awk \'/iqn/{print$2}\'"
+       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 -a chap -u user2 -s qwerasdfzxcvb| awk \'/iqn/{print$2}\'"
        register: iscsi_create
  
      - set_fact:
@@ -39,6 +39,16 @@
 
    - name: Configure iSCSI session at Linux side
      block:
+     - name: add chap into iscsid.conf
+       blockinfile:
+         path: /etc/auto.misc
+         block: |
+                 node.session.auth.authmethod = CHAP
+                 node.session.auth.username = user1
+                 node.session.auth.password = qwerasdfzxcv
+                 node.session.auth.username_in = user2
+                 node.session.auth.password_in = qwerasdfzxcvb
+
      - name: Restart iscsid
        shell: service iscsid restart
 
@@ -53,7 +63,7 @@
    - name: Create HG with members using data form target sessions
      block:
      - name: Create HG for all clients
-       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator|Alias:/{print$2}' | paste - - | awk '{print \"stmfadm create-hg \"$2\"; stmfadm add-hg-member -g \"$2\" \"$1\";\"}')"
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator|Alias:/{print$2}' | paste - - | awk '{print \"stmfadm create-hg \"$2\"; stmfadm add-hg-member -g \"$2\" \"$1\"; itadm create-initiator -s qwerasdfzxcv -u user1 \"$1\";\"}')"
  
      when: inventory_hostname | regex_search('Firecrest')
  
