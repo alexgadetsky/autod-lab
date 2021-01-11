@@ -116,12 +116,11 @@ pipeline {
 			}
 		}
 		stage('SAN configure') {
-			when {
-				expression { 
-					return params.VM_FILTER =~ 'Firecrest' 
-					return params.Prefix == 'san'
-					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
-			}
+			when { allOf {
+				expression { params.VM_FILTER =~ 'Firecrest' }
+				expression { params.Prefix == 'san' }
+				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+			}}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
 					ansiblePlaybook([
