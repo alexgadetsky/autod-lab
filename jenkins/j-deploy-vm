@@ -99,9 +99,11 @@ pipeline {
 		}
 		stage('NAS configure') {
 			when {
-				expression { env.VM =~ 'Firecrest' }
-				expression { env.Prefix == 'nas' }
-				expression { return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+				allOf {
+					expression { env.VM =~ 'Firecrest' }
+					expression { env.Prefix == 'nas' }
+					expression { return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+				}
 			}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
@@ -117,9 +119,11 @@ pipeline {
 		}
 		stage('SAN configure') {
 			when {
-				expression { env.VM =~ 'Firecrest' }
-				expression { env.Prefix == 'san' }
-				expression { return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+				allOf {
+					expression { env.VM =~ 'Firecrest' }
+					expression { env.Prefix == 'san' }
+					expression { return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+				}
 			}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
