@@ -97,13 +97,12 @@ pipeline {
 				}
 			}
 		}
-/*		stage('NAS configure') {
+		stage('NAS configure') {
 			when {
-				allOf {
-					expression { env.VM =~ 'Firecrest' }
-					expression { env.Prefix == 'nas' }
-					expression { return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
-				}
+				expression { 
+					params.VM_FILTER =~ 'Firecrest' 
+					params.Prefix == 'nas'
+					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
@@ -116,15 +115,13 @@ pipeline {
 					])
 				}
 			}
-		}*/
+		}
 		stage('SAN configure') {
 			when {
-		//		allOf {
-					expression { env.VM =~ 'Firecrest' 
-		//			expression { env.Prefix == 'san' }
-				//	expression { 
+				expression { 
+					params.VM_FILTER =~ 'Firecrest' 
+					params.Prefix == 'san'
 					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
-		//		}
 			}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
