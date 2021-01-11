@@ -101,8 +101,8 @@ pipeline {
 			when {
 				expression { 
 					env.VM =~ 'Firecrest'
-					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
 					env.Prefix == 'nas'
+					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
 				}
 			}
 			steps {
@@ -121,8 +121,8 @@ pipeline {
 			when {
 				expression { 
 					env.VM =~ 'Firecrest'
-					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
 					env.Prefix == 'san'
+					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
 				}
 			}
 			steps {
