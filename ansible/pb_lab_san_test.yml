@@ -41,7 +41,7 @@
      block:
      - name: add chap into iscsid.conf
        blockinfile:
-         path: /etc/auto.misc
+         path: /etc/iscsi/iscsid.conf
          block: |
                  node.session.auth.authmethod = CHAP
                  node.session.auth.username = user1
