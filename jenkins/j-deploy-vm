@@ -102,6 +102,7 @@ pipeline {
 				expression { 
 					env.VM =~ 'Firecrest'
 					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+					env.Prefix == 'nas'
 				}
 			}
 			steps {
@@ -111,6 +112,26 @@ pipeline {
 						credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_nas_test.yml',
+						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-Firecrest-latest -l *${env.BUILD_ID}-${params.Prefix}*"
+					])
+				}
+			}
+		}
+		stage('SAN configure') {
+			when {
+				expression { 
+					env.VM =~ 'Firecrest'
+					return params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+					env.Prefix == 'san'
+				}
+			}
+			steps {
+				dir("${WORKSPACE1}/ansible") {
+					ansiblePlaybook([
+						installation:   'ansible',
+						credentialsId:	'tcm-root',
+						inventory:      "inv.${params.ClusterVar}.vmware.yml",
+						playbook:       'pb_lab_san_test.yml',
 						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-Firecrest-latest -l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}
