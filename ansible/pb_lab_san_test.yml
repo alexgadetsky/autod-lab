@@ -5,6 +5,8 @@
   user: root
   vars_files:
      group_vars/all.yml
+  vars:
+          k: ""
   tasks:
    - set_fact:
         mut1: "{{vmpref}}-{{mut}}"
