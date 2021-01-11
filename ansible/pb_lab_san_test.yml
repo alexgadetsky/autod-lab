@@ -57,12 +57,15 @@
      block:
      - shell: |
              for i in $(/usr/sbin/stmfadm list-hg | /usr/bin/awk '/Ubuntu/{print $3}'); \
-             do zfs create -p -V 2G tankm1/vg/z{{k}}-$i; stmfadm create-lu -p blk=4096 /dev/zvol/rdsk/tankm1/vg/z{{k}}-$i | cut -d ' ' -f4 | xargs -L1 stmfadm add-view -t tg_i_t_1 -h $i; done
+             do zfs create -p -V 2G data/vg/z{{k}}-$i; stmfadm create-lu -p blk=4096 /dev/zvol/rdsk/data/vg/z{{k}}-$i | cut -d ' ' -f4 | xargs -L1 stmfadm add-view -t tg_i_t_1 -h $i; done
  
      when: inventory_hostname | regex_search('Firecrest')
  
    - name: Linux mkfs and mount
      block:
+     - set_fact:
+         vendor: 'TEGILE'
+
      - import_tasks: includes/iscsi/linux_format_xfs_mount_iscsi_disk.yml
  
      when: ansible_system == 'Linux'
