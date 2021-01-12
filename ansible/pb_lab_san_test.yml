@@ -21,11 +21,8 @@
      - name: Configure storate - create pool
        shell: zpool create -f data mirror c1t1d0 c1t2d0 mirror c1t3d0 c1t4d0
 
-     - name: Creaet chap secret file
-       shell: echo "qwerasdfzxcvb" > /root/file
-
      - name:  Configure FC iSCSI - Create TPG and target
-       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 -a chap -u user2 -S /root/file | awk \'/iqn/{print$2}\'"
+       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 | awk \'/iqn/{print$2}\'"
        register: iscsi_create
  
      - set_fact:
@@ -66,7 +63,7 @@
    - name: Create HG with members using data form target sessions
      block:
      - name: Create HG for all clients
-       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator|Alias:/{print$2}' | paste - - | awk '{print \"stmfadm create-hg \"$2\"; stmfadm add-hg-member -g \"$2\" \"$1\"; itadm create-initiator -s qwerasdfzxcv -u user1 \"$1\";\"}')"
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator|Alias:/{print$2}' | paste - - | awk '{print \"stmfadm create-hg \"$2\"; stmfadm add-hg-member -g \"$2\" \"$1\";\"}')"
  
      when: inventory_hostname | regex_search('Firecrest')
  
@@ -78,6 +75,36 @@
              do zfs create -p -V 2G data/vg/z{{k}}-$i; stmfadm create-lu -p blk=4096 /dev/zvol/rdsk/data/vg/z{{k}}-$i | cut -d ' ' -f4 | xargs -L1 stmfadm add-view -t tg_i_t_1 -h $i; done
  
      when: inventory_hostname | regex_search('Firecrest')
+
+   - name: chap modify mut
+     block:
+     - name: create initiator
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator/{print \"itadm create-initiator -s qwerasdfzxcv -u user1 \"$2\";\"}')"
+
+     - name: Creaet chap secret file
+       shell: echo "qwerasdfzxcvb" > /root/file
+
+     - name: modify target
+       shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/file {{new_target}}"
+
+     when: inventory_hostname | regex_search('Firecrest') # todo: and chap is true
+
+   - name: chap modify tcm
+     block:
+     - name: add chap into iscsid.conf
+       blockinfile:
+         path: /etc/iscsi/iscsid.conf
+         block: |
+                 node.session.auth.authmethod = CHAP
+                 node.session.auth.username = user1
+                 node.session.auth.password = qwerasdfzxcv
+                 node.session.auth.username_in = user2
+                 node.session.auth.password_in = qwerasdfzxcvb
+
+     - name: Restart iscsid
+       shell: service iscsid restart
+
+     when: ansible_system == 'Linux' # todo: and chap is true
  
    - name: Linux mkfs and mount
      block:
