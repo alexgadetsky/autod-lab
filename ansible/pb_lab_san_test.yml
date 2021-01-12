@@ -39,16 +39,6 @@
 
    - name: Configure iSCSI session at Linux side
      block:
-     - name: add chap into iscsid.conf
-       blockinfile:
-         path: /etc/iscsi/iscsid.conf
-         block: |
-                 node.session.auth.authmethod = CHAP
-                 node.session.auth.username = user1
-                 node.session.auth.password = qwerasdfzxcv
-                 node.session.auth.username_in = user2
-                 node.session.auth.password_in = qwerasdfzxcvb
-
      - name: Restart iscsid
        shell: service iscsid restart
 
@@ -76,35 +66,35 @@
  
      when: inventory_hostname | regex_search('Firecrest')
 
-#   - name: chap modify mut
-#     block:
-#     - name: create initiator
-#       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator/{print \"itadm create-initiator -s qwerasdfzxcv -u user1 \"$2\";\"}')"
-#
-#     - name: Creaet chap secret file
-#       shell: echo "qwerasdfzxcvb" > /root/file
-#
-#     - name: modify target
-#       shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/file {{new_target}}"
-#
-#     when: inventory_hostname | regex_search('Firecrest') # todo: and chap is true
-#
-#   - name: chap modify tcm
-#     block:
-#     - name: add chap into iscsid.conf
-#       blockinfile:
-#         path: /etc/iscsi/iscsid.conf
-#         block: |
-#                 node.session.auth.authmethod = CHAP
-#                 node.session.auth.username = user1
-#                 node.session.auth.password = qwerasdfzxcv
-#                 node.session.auth.username_in = user2
-#                 node.session.auth.password_in = qwerasdfzxcvb
-#
-#     - name: Restart iscsid
-#       shell: service iscsid restart
-#
-#     when: ansible_system == 'Linux' # todo: and chap is true
+   - name: chap modify mut
+     block:
+     - name: create initiator
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator/{print \"itadm create-initiator -s qwerasdfzxcv -u user1 \"$2\";\"}')"
+
+     - name: Creaet chap secret file
+       shell: echo "qwerasdfzxcvb" > /root/file
+
+     - name: modify target
+       shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/file {{new_target}}"
+
+     when: inventory_hostname | regex_search('Firecrest') # todo: and chap is true
+
+   - name: chap modify tcm
+     block:
+     - name: add chap into iscsid.conf
+       blockinfile:
+         path: /etc/iscsi/iscsid.conf
+         block: |
+                 node.session.auth.authmethod = CHAP
+                 node.session.auth.username = user1
+                 node.session.auth.password = qwerasdfzxcv
+                 node.session.auth.username_in = user2
+                 node.session.auth.password_in = qwerasdfzxcvb
+
+     - name: Restart iscsid
+       shell: service iscsid restart
+
+     when: ansible_system == 'Linux' # todo: and chap is true
  
    - name: Linux mkfs and mount
      block:
