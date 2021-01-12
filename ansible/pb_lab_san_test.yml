@@ -21,8 +21,11 @@
      - name: Configure storate - create pool
        shell: zpool create -f data mirror c1t1d0 c1t2d0 mirror c1t3d0 c1t4d0
 
-     - name:  Configure FC iSCSI - Create TPG and taret
-       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 -a chap -u user2 -s qwerasdfzxcvb| awk \'/iqn/{print$2}\'"
+     - name: Creaet chap secret file
+       shell: echo "qwerasdfzxcvb" > /root/file
+
+     - name:  Configure FC iSCSI - Create TPG and target
+       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 -a chap -u user2 -S /root/file | awk \'/iqn/{print$2}\'"
        register: iscsi_create
  
      - set_fact:
