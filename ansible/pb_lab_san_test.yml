@@ -68,14 +68,17 @@
 
    - name: chap modify mut
      block:
+     - name: Creaet chap secret file
+       shell: echo "qwerasdfzxcv" > /root/filei
+
      - name: create initiator
-       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator/{print \"itadm create-initiator -s qwerasdfzxcv -u user1 \"$2\";\"}')"
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator/{print \"itadm create-initiator -u user1 -S /root/filei \"$2}')"
 
      - name: Creaet chap secret file
-       shell: echo "qwerasdfzxcvb" > /root/file
+       shell: echo "qwerasdfzxcvb" > /root/filet
 
      - name: modify target
-       shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/file {{new_target}}"
+       shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/filet {{new_target}}"
 
      when: inventory_hostname | regex_search('Firecrest') # todo: and chap is true
 
