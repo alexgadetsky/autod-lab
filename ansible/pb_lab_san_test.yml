@@ -80,7 +80,7 @@
      - name: modify target
        shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/filet {{new_target}}"
 
-     when: inventory_hostname | regex_search('Firecrest') and chap is true
+     when: inventory_hostname | regex_search('Firecrest') and chap | bool == true
 
    - name: chap modify tcm
      block:
@@ -104,7 +104,7 @@
      - name: Recan sessions
        shell: iscsiadm -m session --rescan
 
-     when: ansible_system == 'Linux' and chap is true
+     when: ansible_system == 'Linux' and chap | bool == true
  
    - name: Linux mkfs and mount
      block:
