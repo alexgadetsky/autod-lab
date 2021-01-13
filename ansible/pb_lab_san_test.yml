@@ -95,7 +95,7 @@
                  node.session.auth.password_in = qwerasdfzxcvb
 
      - name: Restart iscsid
-       shell: service iscsid restart
+       shell: service iscsid restart && iscsiadm -m session --rescan
 
      when: ansible_system == 'Linux' # todo: and chap is true
  
