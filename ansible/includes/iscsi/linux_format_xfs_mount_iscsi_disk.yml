@@ -1,7 +1,9 @@
 - name: rescan iscsi sessions
   shell: iscsiadm -m session --rescan && iscsiadm -m session -P3 | grep "Attached.*running"
   register: out
-  untill: out.rc == 0 
+  until: out.rc == 0 
+  retries: 5
+  delay: 10
 
 - name: pause after rescan
   pause:
