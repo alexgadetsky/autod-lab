@@ -58,12 +58,13 @@
 #        fio_file: "/mnt/san/{{inventory_hostname}}/fio.file"
 #    when: vmtype = 'iscsi'
 
-  - set_fact:
+  - name: Local fio.wk conf
+    block: 
+    - set_fact:
       fio_file: "/tmp/fio.file"
 
-  - set_fact:
+    - set_fact:
       fio_size: 10G
-
     when: vmtype == 'local'
 
   - name: Copy fio wk for "{{vmtype}}"
