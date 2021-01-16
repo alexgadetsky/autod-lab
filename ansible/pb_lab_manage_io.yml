@@ -5,6 +5,8 @@
   user: root
   vars_files:
      group_vars/all.yml
+  vars:
+    fiowk: "fio.wk"
   tasks:
   - name: Configure NFS
     block:
@@ -61,6 +63,9 @@
   - name: Local fio.wk conf
     block: 
     - set_fact:
+        fiowk: "fio_local.wk"
+
+    - set_fact:
         fio_file: "/tmp/fio.file"
 
     - set_fact:
@@ -69,7 +74,7 @@
 
   - name: Copy fio wk for "{{vmtype}}"
     template:
-      src: "fio.wk"
+      src: "{{fiowk}}"
       dest: /root/fio.wk
     when: "(vmtype != 'anfs') or (vmtype != 'asmb')" 
 
