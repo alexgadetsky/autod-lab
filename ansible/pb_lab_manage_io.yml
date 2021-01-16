@@ -61,10 +61,10 @@
   - name: Local fio.wk conf
     block: 
     - set_fact:
-      fio_file: "/tmp/fio.file"
+        fio_file: "/tmp/fio.file"
 
     - set_fact:
-      fio_size: 10G
+        fio_size: 10G
     when: vmtype == 'local'
 
   - name: Copy fio wk for "{{vmtype}}"
