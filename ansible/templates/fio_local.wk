@@ -3,7 +3,8 @@
 [global]
 rw=randread
 size=256m
-directory=/tmp/fio-testing/data
+#directory=/tmp/fio-testing/data
+directory=/tmp/
 ioengine=libaio
 iodepth=4
 invalidate=1
