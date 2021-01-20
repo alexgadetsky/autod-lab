@@ -29,7 +29,7 @@
         state: poweredon
         guest_id: otherGuest64
         disk:
-        - size_gb: 20
+        - size_gb: 100
           type: thin
           datastore: "{{datastore}}"
         - size_gb: 200
