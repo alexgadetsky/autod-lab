@@ -1,16 +1,30 @@
+...
 domain: "hypernexenta.corp"
 
 vcenter_hostname: "vcenter.hypernexenta.corp"
 vcenter_username: "Administrator@vsphere.local"
-vcenter_password: "Nexenta1!"
-
-datacenter: "AutoD"
-cluster: "R720s"
-datastore: "autoD"
-folder: "Auto_FC"
-net_1Gbit: "1GB"
-net_10Gbit: "10GB"
-
-vm_name: "fc_vm_01"
-
+vcenter_password: "Nexenta@123"
+datacenter: "qa_lab"
+cluster: "autoD"
+folder: "nex"
+datastore: "autoD_nex"
+net_1Gbit: "10x_1G_network"
+net_10Gbit: "DPortGroup"
+fc_vm_name: "fc_vm_01"
 vmpref: "autoD"
+
+vendor: "NEXENTA"
+
+MAC3: "00:57:00"
+MAC4: "00:59:00"
+MAC_NS-530: "00:60:30"
+MAC_NS-521: "00:60:31"
+MAC_Firecrest-latest: "00:60:40"
+MAC_Centos7: "00:60:07"
+MAC_Centos8: "00:60:08"
+MAC_Ubuntu18: "00:60:18"
+MAC_Ubuntu20: "00:60:20"
+
+mut: ''
+VMC: 3
+---
