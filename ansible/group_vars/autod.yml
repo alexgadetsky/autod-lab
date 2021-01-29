@@ -1,4 +1,4 @@
-...
+---
 domain: "hypernexenta.corp"
 
 vcenter_hostname: "vcenter.hypernexenta.corp"
@@ -27,4 +27,4 @@ MAC_Ubuntu20: "00:60:20"
 
 mut: ''
 VMC: 3
----
+...
