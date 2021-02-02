@@ -18,7 +18,7 @@ pipeline {
 		booleanParam(name: 'useCHAP', defaultValue: false, description: '')
 
 	}
-	agent any
+	agent master
 	environment {
 		WORKSPACE1 = ""
 	}
