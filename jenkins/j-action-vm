@@ -11,7 +11,8 @@ pipeline {
 			description: 'Enter Pattern for limit VMs',
 			defaultValue: 'Ubuntu or for-smth')
 	}
-	agent any
+	agent { label 'master' }
+	environment {
 	environment {
 		WORKSPACE1 = ""
 	}
