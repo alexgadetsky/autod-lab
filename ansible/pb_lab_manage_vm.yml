@@ -17,7 +17,7 @@
     - set_fact:
         MAC: "{{ lookup('vars', MAC_j) }}"
     - set_fact:
-        folder: "{{ vm_name.split(\"-\")[3] }}"
+        folder: "{{ vm_name.split(\"-\")[2] }}"
     - name: Create a FireCrest VM
       community.vmware.vmware_guest:
         hostname: "{{vcenter_hostname}}"
