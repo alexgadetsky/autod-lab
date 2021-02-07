@@ -2,14 +2,14 @@
 pipeline {
 	parameters {
 		extendedChoice(
-			defaultValue: 'Firecrest-latest',
+			defaultValue: 'firecrest',
 			description: 'VMs',
 			multiSelectDelimiter: ',',
 			name: 'VM_FILTER',
 			quoteValue: false,
 			saveJSONParameterToFile: false,
 			type: 'PT_CHECKBOX',
-			value: 'NS-530,NS-521,Firecrest-latest,Ubuntu18,Ubuntu20',
+			value: 'NS-530,NS-521,firecrest,Ubuntu18,Ubuntu20',
 			visibleItemCount: 5)
 		text(name: 'VMC', description: 'VM count',	defaultValue: '1')
 		text(name: 'Prefix', description: 'Grouping VMs', defaultValue: 'for-smth')
@@ -39,7 +39,7 @@ pipeline {
 				axes {
 					axis {
 						name 'VM'
-						values 'NS-530', 'NS-521', 'Firecrest-latest', 'Ubuntu20', 'Ubuntu18'
+						values 'NS-530', 'NS-521', 'firecrest', 'Ubuntu20', 'Ubuntu18'
 					}
 				}
 				stages {
@@ -100,7 +100,7 @@ pipeline {
 		}
 		stage('NAS configure') {
 			when { allOf {
-				expression { params.VM_FILTER =~ 'Firecrest' }
+				expression { params.VM_FILTER =~ 'firecrest' }
 				expression { params.Prefix == 'nas' }
 				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}}
@@ -111,14 +111,14 @@ pipeline {
 						credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_nas_test.yml',
-						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-Firecrest-latest -l *${env.BUILD_ID}-${params.Prefix}*"
+						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-firecrest -l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}
 			}
 		}
 		stage('SAN configure') {
 			when { allOf {
-				expression { params.VM_FILTER =~ 'Firecrest' }
+				expression { params.VM_FILTER =~ 'firecrest' }
 				expression { params.Prefix == 'san' }
 				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}}
@@ -129,7 +129,7 @@ pipeline {
 						credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_san_test.yml',
-						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-Firecrest-latest -e chap=${env.useCHAP} -l *${env.BUILD_ID}-${params.Prefix}*"
+						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-firecrest -e chap=${env.useCHAP} -l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}
 			}
