@@ -1,6 +1,6 @@
 plugin: community.vmware.vmware_vm_inventory
 strict: False
-hostname: "vcenter.nexenta.local"
+hostname: "vcenter67.nexenta.local"
 username: "Administrator@vsphere.local"
 password: "Nexenta1!"
 validate_certs: False
