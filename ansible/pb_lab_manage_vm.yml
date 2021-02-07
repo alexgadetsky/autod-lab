@@ -74,7 +74,7 @@
       register: get_vm_info
     - debug:
          msg: "VM IP is {{get_vm_info.instance.ipv4}}"
-    when: "(vm_state is not defined) and ((vm_name | regex_search('Firecrest')) or (vm_name | regex_search('NS')))"
+    when: "(vm_state is not defined) and ((vm_name | regex_search('firecrest')) or (vm_name | regex_search('NS')))"
 
   - name: Create a virtual client machine and take IP
     block:
