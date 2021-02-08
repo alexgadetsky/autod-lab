@@ -14,6 +14,10 @@
    - set_fact:
         mut_ip: "{{hostvars[mut1]['ansible_default_ipv4']['address']}}"
 
+   - set_fact:
+        chap: true
+     when: inventory_hostname | regex_search('chap')
+
    - block:
      - name: Enalbe iscsit and stmf
        shell: svcadm enable -r svc:/network/iscsi/target:default
@@ -35,7 +39,7 @@
                /usr/sbin/stmfadm offline-target "{{new_target}}" && /usr/sbin/stmfadm add-tg-member -g tg_i_t_1 "{{new_target}}"
                /usr/sbin/stmfadm online-target "{{new_target}}"
  
-     when: inventory_hostname | regex_search('Firecrest')
+     when: inventory_hostname | regex_search('firecrest')
 
    - name: Configure iSCSI session at Linux side
      block:
@@ -55,7 +59,7 @@
      - name: Create HG for all clients
        shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator|Alias:/{print$2}' | paste - - | awk '{print \"stmfadm create-hg \"$2\"; stmfadm add-hg-member -g \"$2\" \"$1\";\"}')"
  
-     when: inventory_hostname | regex_search('Firecrest')
+     when: inventory_hostname | regex_search('firecrest')
  
    - name: Create volumes with mappings
      block:
@@ -64,7 +68,7 @@
              for i in $(/usr/sbin/stmfadm list-hg | /usr/bin/awk '/Ubuntu/{print $3}'); \
              do zfs create -p -V 2G data/vg/z{{k}}-$i; stmfadm create-lu -p blk=4096 /dev/zvol/rdsk/data/vg/z{{k}}-$i | cut -d ' ' -f4 | xargs -L1 stmfadm add-view -t tg_i_t_1 -h $i; done
  
-     when: inventory_hostname | regex_search('Firecrest')
+     when: inventory_hostname | regex_search('firecrest')
 
    - name: chap modify mut
      block:
@@ -80,7 +84,7 @@
      - name: modify target
        shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/filet {{new_target}}"
 
-     when: inventory_hostname | regex_search('Firecrest') and chap | bool == true
+     when: inventory_hostname | regex_search('firecrest') and chap | bool == true
 
    - name: chap modify tcm
      block:

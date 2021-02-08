@@ -11,11 +11,21 @@ pipeline {
 			type: 'PT_CHECKBOX',
 			value: 'NS-530,NS-521,firecrest,Ubuntu18,Ubuntu20',
 			visibleItemCount: 5)
+		extendedChoice(
+			defaultValue: 'for-smth',
+			description: 'Grouping VMs',
+			multiSelectDelimiter: ',',
+			name: 'Prefix',
+			quoteValue: false,
+			saveJSONParameterToFile: false,
+			type: 'PT_CHECKBOX',
+			value: 'for-smth,vmnas,vmsan,vmsanchap,vmiscsisession,hwnfs,hwcifs',
+			visibleItemCount: 5)
 		text(name: 'VMC', description: 'VM count',	defaultValue: '1')
-		text(name: 'Prefix', description: 'Grouping VMs', defaultValue: 'for-smth')
+//		text(name: 'Prefix', description: 'Grouping VMs', defaultValue: 'for-smth')
 		choice(name: 'ClusterVar', choices: ['autod','i40','krd'], description: '')
 		booleanParam(name: 'MUTisVM', defaultValue: false, description: '')
-		booleanParam(name: 'useCHAP', defaultValue: false, description: '')
+//		booleanParam(name: 'useCHAP', defaultValue: false, description: '')
 
 	}
 	agent { label 'master' }
@@ -119,7 +129,7 @@ pipeline {
 		stage('SAN configure') {
 			when { allOf {
 				expression { params.VM_FILTER =~ 'firecrest' }
-				expression { params.Prefix == 'san' }
+				expression { params.Prefix =~ 'san' }
 				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}}
 			steps {
@@ -129,7 +139,7 @@ pipeline {
 						credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_san_test.yml',
-						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-firecrest -e chap=${env.useCHAP} -l *${env.BUILD_ID}-${params.Prefix}*"
+						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-firecrest -l *${env.BUILD_ID}-${params.Prefix}*"
 					])
 				}
 			}
