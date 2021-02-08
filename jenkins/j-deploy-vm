@@ -18,13 +18,14 @@ pipeline {
 			name: 'Prefix',
 			quoteValue: false,
 			saveJSONParameterToFile: false,
-			type: 'PT_CHECKBOX',
+//			type: 'PT_CHECKBOX',
+			type: 'PT_SINGLE_SELECT',
 			value: 'for-smth,vmnas,vmsan,vmsanchap,vmiscsisession,hwnfs,hwcifs',
-			visibleItemCount: 5)
+			visibleItemCount: 7)
 		text(name: 'VMC', description: 'VM count',	defaultValue: '1')
 //		text(name: 'Prefix', description: 'Grouping VMs', defaultValue: 'for-smth')
 		choice(name: 'ClusterVar', choices: ['autod','i40','krd'], description: '')
-		booleanParam(name: 'MUTisVM', defaultValue: false, description: '')
+//		booleanParam(name: 'MUTisVM', defaultValue: false, description: '')
 //		booleanParam(name: 'useCHAP', defaultValue: false, description: '')
 
 	}
@@ -111,8 +112,8 @@ pipeline {
 		stage('NAS configure') {
 			when { allOf {
 				expression { params.VM_FILTER =~ 'firecrest' }
-				expression { params.Prefix == 'nas' }
-				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+				expression { params.Prefix =~ 'vmnas' }
+//				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}}
 			steps {
 				dir("${WORKSPACE1}/ansible") {
@@ -129,8 +130,8 @@ pipeline {
 		stage('SAN configure') {
 			when { allOf {
 				expression { params.VM_FILTER =~ 'firecrest' }
-				expression { params.Prefix =~ 'san' }
-				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
+				expression { params.Prefix =~ 'vmsan' }
+//				expression { params.MUTisVM ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/ }
 			}}
 			steps {
 				dir("${WORKSPACE1}/ansible") {

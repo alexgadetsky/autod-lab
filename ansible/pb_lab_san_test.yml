@@ -7,6 +7,7 @@
      group_vars/all.yml
   vars:
           k: ""
+          chap: False
   tasks:
    - set_fact:
         mut1: "{{vmpref}}-{{mut}}"
@@ -15,7 +16,7 @@
         mut_ip: "{{hostvars[mut1]['ansible_default_ipv4']['address']}}"
 
    - set_fact:
-        chap: true
+        chap: True
      when: inventory_hostname | regex_search('chap')
 
    - block:
