@@ -39,7 +39,7 @@
      - name: snapshot
        shell: zfs snapshot -r data@1
 
-     when: inventory_hostname | regex_search('Firecrest')
+     when: inventory_hostname | regex_search('firecrest')
 
    - block: 
      - name: Create the mount point
