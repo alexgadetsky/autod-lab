@@ -1,0 +1,87 @@
+- name: Create new iSCSI target 
+  nef:
+    user: "{{ nef_user }}"
+    password: "{{ nef_password }}"
+    host: "{{ nef_host }}"
+    method: post
+    path: san/iscsi/targets
+    payload:
+       portals: 
+        - address: "{{ iscsi_vip }}"
+       alias: forVM
+  register: iscsiout
+  delegate_to: localhost
+
+- set_fact:
+        new_target: "{{ iscsiout.data }}"
+
+- name: Create new TargetGroup with iSCSI target 
+  nef:
+    user: "{{ nef_user }}"
+    password: "{{ nef_password }}"
+    host: "{{ nef_host }}"
+    method: post
+    path: san/targetgroups
+    payload:
+      name: "tg_{{ ansible_hostname }}" 
+      members: ["{{ new_target }}"]
+  delegate_to: localhost
+
+- name: Create HostGroup with Linux initiators
+  nef:
+    user: "{{ nef_user }}"
+    password: "{{ nef_password }}"
+    host: "{{ nef_host }}"
+    method: post
+    path: san/hostgroups
+    payload:
+      name: "hg_{{ ansible_hostname }}"
+      members: ["{{ ansible_iscsi_iqn }}"]
+  delegate_to: localhost
+
+- name: Create volumeGroup
+  nef:
+    user: "{{ nef_user }}"
+    password: "{{ nef_password }}"
+    host: "{{ nef_host }}"
+    method: post
+    path: storage/volumeGroups
+    payload:
+       path: "{{ pool_iscsi }}/vg-is-ans"
+       volumeBlockSize: "{{s128k}}"
+  register: vgout
+  delegate_to: localhost
+  run_once: True
+  #  failed_when: '"EEXIST" not in vgout.msg'
+
+- name: Create Volumes
+  nef:
+    user: "{{ nef_user }}"
+    password: "{{ nef_password }}"
+    host: "{{ nef_host }}"
+    method: post
+    path: storage/volumes
+    payload:
+       path: "{{ pool_iscsi }}/vg-is-ans/{{ ansible_hostname }}"
+       volumeSize: 32768000000
+  delegate_to: localhost
+
+- name: Create LunMappings
+  nef:
+    user: "{{ nef_user }}"
+    password: "{{ nef_password }}"
+    host: "{{ nef_host }}"
+    method: post
+    path: san/lunMappings
+    payload:
+       volume: "{{ pool_iscsi }}/vg-is-ans/{{ ansible_hostname }}"
+       hostGroup: "hg_{{ ansible_hostname }}"
+       targetGroup: "tg_{{ ansible_hostname }}"
+  delegate_to: localhost
+
+- name: Create sessions
+  shell: "iscsiadm -m node -T {{ new_target }} -p {{ iscsi_vip }} -o new"
+
+- name: Logging into target
+  shell: "iscsiadm -m node -T {{ new_target }} -p {{ iscsi_vip }} -l"
+

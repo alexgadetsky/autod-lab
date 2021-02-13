@@ -1,0 +1,87 @@
+---
+- name: Configure VM
+  gather_facts: yes
+  hosts: all
+  user: root
+  vars_files:
+     group_vars/all.yml
+  vars:
+    fiowk: "fio.wk"
+  tasks:
+  - name: Configure NFS
+    block:
+    - name: Mount share NFS v3 and v4
+      mount:
+        name: "/mnt/nas/{{vmtype}}"
+        src: "{{ share_ip }}:{{ pool_for_shares }}/nfs"
+        fstype: nfs
+        opts: "rw,sync,nfsvers={{vmtype[3:]}}"
+        state: mounted
+    - set_fact:
+        fio_file: "/mnt/nas/{{vmtype}}/{{inventory_hostname}}"
+
+    - set_fact:
+        fio_size: 10G
+
+    when: vmtype[:3] == 'nfs'
+
+  - name: Configure CIFS
+    block:
+    - name: Mount share (CIFS) "//{{ share_ip }}/{{ cifs_share }}{{inventory_hostname}}"
+      mount:
+        fstype: "cifs"
+        opts: "user={{ cifs_user }},pass={{ cifs_passwd }},vers=2.1"
+        src: "//{{ share_ip }}/{{ cifs_share }}"
+        name: "/mnt/nas/{{vmtype}}"
+        state: "mounted"
+    - set_fact:
+        fio_file: "/mnt/nas/{{vmtype}}/{{inventory_hostname}}"
+
+    - set_fact:
+        fio_size: 10G
+
+    when: vmtype == 'cifs'
+
+#  - name: Configure iSCSI
+#    block:
+#    - name: Create new iSCSI target 
+#      import_tasks: includes/iscsi/ns_conf_target_tg_hg_vol_map.yml
+#    - name: Linux mkfs and mount
+#      import_tasks: includes/iscsi/linux_format_xfs_mount_iscsi_disk.yml
+#    - name: Enable WBC
+#      import_tasks: includes/ns_lun_wbc.yml
+#      delegate_to: localhost
+#      run_once: True
+#    - name: delete
+#      import_tasks: includes/iscsi/ns_unconf.yml
+#      when: delete is defined
+#      ignore_errors: yes
+#    - set_fact:
+#        fio_file: "/mnt/san/{{inventory_hostname}}/fio.file"
+#    when: vmtype = 'iscsi'
+
+  - name: Local fio.wk conf
+    block: 
+    - set_fact:
+        fiowk: "fio_local.wk"
+
+    - set_fact:
+        fio_file: "/tmp/fio.file"
+
+    - set_fact:
+        fio_size: 10G
+    when: vmtype == 'local'
+
+  - name: Copy fio wk for "{{vmtype}}"
+    template:
+      src: "{{fiowk}}"
+      dest: /root/fio.wk
+    when: "(vmtype != 'anfs') or (vmtype != 'asmb')" 
+
+  - name: Run fio task
+    shell: fio --output fio.log fio.wk
+    async: 4000000
+    poll: 0
+    register: fio
+    ignore_errors: yes
+

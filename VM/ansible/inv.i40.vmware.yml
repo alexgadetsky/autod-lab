@@ -1,0 +1,23 @@
+plugin: community.vmware.vmware_vm_inventory
+strict: False
+hostname: "vcenter.nexenta.local"
+username: "Administrator@vsphere.local"
+password: "Nexenta1!"
+validate_certs: False
+with_tags: False
+filters:
+    - runtime.powerState == "poweredOn"
+    - config.name | regex_search('i40')
+properties:
+        #        - 'name'
+        - 'config.name'
+        - 'guest.ipAddress'
+        - 'guest.hostName'
+hostnames:
+        - 'config.name'
+groups:
+   NFS: config.name | regex_search('nfs')
+   SMB: config.name | regex_search('smb')
+   iSCSI: config.name | regex_search('iscsi')
+   Local: config.name | regex_search('local')
+

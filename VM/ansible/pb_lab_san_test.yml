@@ -1,0 +1,144 @@
+---
+- name: Configure VM
+  gather_facts: yes
+  hosts: all
+  user: root
+  vars_files:
+     group_vars/all.yml
+  vars:
+          k: ""
+          chap: False
+  tasks:
+   - set_fact:
+        mut1: "{{vmpref}}-{{mut}}"
+
+   - set_fact:
+        mut_ip: "{{hostvars[mut1]['ansible_default_ipv4']['address']}}"
+
+   - set_fact:
+        chap: True
+     when: inventory_hostname | regex_search('chap')
+
+   - block:
+     - name: Enalbe iscsit and stmf
+       shell: svcadm enable -r svc:/network/iscsi/target:default
+
+     - name: Configure storate - create pool
+       shell: zpool create -f data mirror c1t1d0 c1t2d0 mirror c1t3d0 c1t4d0
+
+     - name:  Configure FC iSCSI - Create TPG and target
+       shell:  "/usr/sbin/itadm create-tpg tpg2  {{ mut_ip }} && /usr/sbin/itadm create-target -t tpg2 | awk \'/iqn/{print$2}\'"
+       register: iscsi_create
+ 
+     - set_fact:
+         new_target: "{{iscsi_create.stdout}}"
+         cacheable: yes
+ 
+     - name: Configure FC iSCSI - Create TG and add member
+       shell: |
+               /usr/sbin/stmfadm create-tg -R rg1 tg_i_t_1
+               /usr/sbin/stmfadm offline-target "{{new_target}}" && /usr/sbin/stmfadm add-tg-member -g tg_i_t_1 "{{new_target}}"
+               /usr/sbin/stmfadm online-target "{{new_target}}"
+ 
+     when: inventory_hostname | regex_search('firecrest')
+
+   - name: Configure iSCSI session at Linux side
+     block:
+     - name: Restart iscsid
+       shell: service iscsid restart
+
+     - name: Create sessions
+       shell: "iscsiadm -m node -T {{ hostvars[mut1]['new_target'] }} -p {{ mut_ip }} -o new"
+ 
+     - name: Logging into target
+       shell: "iscsiadm -m node -T {{ hostvars[mut1]['new_target'] }} -p {{ mut_ip }} -l"
+ 
+     when: ansible_system == 'Linux'
+ 
+   - name: Create HG with members using data form target sessions
+     block:
+     - name: Create HG for all clients
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator|Alias:/{print$2}' | paste - - | awk '{print \"stmfadm create-hg \"$2\"; stmfadm add-hg-member -g \"$2\" \"$1\";\"}')"
+ 
+     when: inventory_hostname | regex_search('firecrest')
+ 
+   - name: Create volumes with mappings
+     block:
+     - name: Create volume and mappings
+       shell: |
+             for i in $(/usr/sbin/stmfadm list-hg | /usr/bin/awk '/Ubuntu/{print $3}'); \
+             do zfs create -p -V 2G data/vg/z{{k}}-$i; stmfadm create-lu -p blk=4096 /dev/zvol/rdsk/data/vg/z{{k}}-$i | cut -d ' ' -f4 | xargs -L1 stmfadm add-view -t tg_i_t_1 -h $i; done
+ 
+     when: inventory_hostname | regex_search('firecrest')
+
+   - name: chap modify mut
+     block:
+     - name: Creaet chap secret file
+       shell: echo "qwerasdfzxcv" > /root/filei
+
+     - name: create initiator
+       shell: "source <(stmfadm list-target -v {{new_target}} | awk '/Initiator/{print \"itadm create-initiator -u user1 -S /root/filei \"$2}')"
+
+     - name: Creaet chap secret file
+       shell: echo "qwerasdfzxcvb" > /root/filet
+
+     - name: modify target
+       shell: "/usr/sbin/itadm modify-target -a chap -u user2 -S /root/filet {{new_target}}"
+
+     when: inventory_hostname | regex_search('firecrest') and chap | bool == true
+
+   - name: chap modify tcm
+     block:
+     - name: add chap into iscsid.conf
+       blockinfile:
+         path: /etc/iscsi/iscsid.conf
+         block: |
+                 node.session.auth.authmethod = CHAP
+                 node.session.auth.username = user1
+                 node.session.auth.password = qwerasdfzxcv
+                 node.session.auth.username_in = user2
+                 node.session.auth.password_in = qwerasdfzxcvb
+
+     - name: Restart iscsid
+       shell: service iscsid restart
+
+     - name: pause after restart
+       pause:
+         seconds: 20       
+       
+     - name: Recan sessions
+       shell: iscsiadm -m session --rescan
+
+     when: ansible_system == 'Linux' and chap | bool == true
+ 
+   - name: Linux mkfs and mount
+     block:
+     - set_fact:
+         vendor: 'TEGILE'
+
+     - import_tasks: includes/iscsi/linux_format_xfs_mount_iscsi_disk.yml
+ 
+     when: ansible_system == 'Linux'
+ 
+   - name: Copy fio.wk and start IO
+     block:
+     - set_fact:
+         fio_file: "/mnt/san/fio"
+ 
+     - set_fact:
+         fio_size: 1G
+             
+     - name: Copy fio conf
+       template:
+         src: fio.wk
+         dest: /root/fio.wk
+ 
+     - name: Run fio task
+       shell: fio --output fio.log fio.wk
+       async: 4000000
+       poll: 0
+       register: fio
+       ignore_errors: yes
+ 
+     when: ansible_system == 'Linux'
+  
