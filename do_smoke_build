@@ -23,7 +23,7 @@ pipeline {
 		}
 		stage('Do NAS Smoke') {
 			steps {
-				build job: 'AutoD-DeployVMs', wait: true, parameters: [[(extendedChoicename: 'VM_FILTER', value: 'firecrest,Ubuntu18')], [string(name: 'VMC', value: '1')], [extendedChoice(name: 'Prefix', value: 'vmnas')], [string(name:'ClusterVar', value: 'autod')]]
+				build job: 'AutoD-DeployVMs', wait: true, parameters: [[extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18')], [string(name: 'VMC', value: '1')], [extendedChoice(name: 'Prefix', value: 'vmnas')], [string(name:'ClusterVar', value: 'autod')]]
 			}
 		}
 	}
