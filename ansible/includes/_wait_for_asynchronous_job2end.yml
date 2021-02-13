@@ -1,7 +1,0 @@
-- name: Wait for asynchronous job to end
-  async_status:
-    jid: '{{ item.ansible_job_id }}'
-  register: job_result
-  until: job_result.finished
-  retries: 50
-  loop: "{{ list_of_results }}"
