@@ -1,0 +1,27 @@
+#!groovy
+pipeline {
+	parameters{
+		text(name: 'buildN', description: 'FC build number',	defaultValue: '')
+	}
+	agent { label 'master' }
+//	environment {
+//		WORKSPACE1 = ""
+//	}
+	stages {
+/*		stage('GitClone') {
+			steps {
+				script {
+					WORKSPACE1 = WORKSPACE
+				}
+				git branch: 'main', url: 'https://github.com/alexgadetsky/autod-lab.git'
+			}
+		} */
+		stage('Do PXE conf') {
+			build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: '${params.buildN}')]
+		}
+		stage('Do NAS Smoke') {
+			build job: 'AutoD-DeployVMs', wait: true, parameters: [[string(name: 'VM_FILTER', value: 'firecrest,Ubuntu18'], [string(name: 'VMC', values: '1')], [string(name: 'Prefix', value: 'vmnas')],[string(name:'ClusterVar', value: 'autod')]]
+		}
+	}
+}
+
