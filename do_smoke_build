@@ -20,7 +20,7 @@ pipeline {
 			build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: '${params.buildN}')]
 		}
 		stage('Do NAS Smoke') {
-			build job: 'AutoD-DeployVMs', wait: true, parameters: [[string(name: 'VM_FILTER', value: 'firecrest,Ubuntu18'], [string(name: 'VMC', values: '1')], [string(name: 'Prefix', value: 'vmnas')],[string(name:'ClusterVar', value: 'autod')]]
+			build job: 'AutoD-DeployVMs', wait: true, parameters: [[string(name: 'VM_FILTER', value: 'firecrest,Ubuntu18')], [string(name: 'VMC', values: '1')], [string(name: 'Prefix', value: 'vmnas')],[string(name:'ClusterVar', value: 'autod')]]
 		}
 	}
 }
