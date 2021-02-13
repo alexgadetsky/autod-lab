@@ -18,7 +18,7 @@ pipeline {
 		} */
 		stage('Do PXE conf') {
 			steps {
-				build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: '${params.buildN}')]
+				build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: "${params.buildN}")]
 			}
 		}
 		stage('Do NAS Smoke') {
