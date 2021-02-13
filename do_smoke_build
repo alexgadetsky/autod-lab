@@ -4,30 +4,41 @@ pipeline {
 		text(name: 'buildN', description: 'FC build number',	defaultValue: '')
 	}
 	agent { label 'master' }
-//	environment {
-//		WORKSPACE1 = ""
-//	}
 	stages {
-/*		stage('GitClone') {
-			steps {
-				script {
-					WORKSPACE1 = WORKSPACE
-				}
-				git branch: 'main', url: 'https://github.com/alexgadetsky/autod-lab.git'
-			}
-		} */
 		stage('Do PXE conf') {
 			steps {
 				build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: "${params.buildN}")]
 			}
 		}
-		stage('Do NAS Smoke') {
-			steps {
-				build job: 'AutoD-DeployVMs', wait: true, parameters: [
-					extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18'),
-					string(name: 'VMC', value: '1'),
-					extendedChoice(name: 'Prefix', value: 'vmnas'),
-					string(name:'ClusterVar', value: 'autod')]
+		stage('Do Smoke') {
+			parallel {
+				stage('Do NAS Smoke') {
+					steps {
+						build job: 'AutoD-DeployVMs', wait: true, parameters: [
+							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
+							string(name: 'VMC', value: '1'),
+							extendedChoice(name: 'Prefix', value: 'vmnas'),
+							string(name:'ClusterVar', value: 'autod')]
+					}
+				}
+				stage('Do SAN iSCSI Smoke') {
+					steps {
+						build job: 'AutoD-DeployVMs', wait: true, parameters: [
+							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
+							string(name: 'VMC', value: '1'),
+							extendedChoice(name: 'Prefix', value: 'vmnas'),
+							string(name:'ClusterVar', value: 'autod')]
+					}
+				}
+				stage('Do SAN iSCSI CHAP Smoke') {
+					steps {
+						build job: 'AutoD-DeployVMs', wait: true, parameters: [
+							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
+							string(name: 'VMC', value: '1'),
+							extendedChoice(name: 'Prefix', value: 'vmnaschap'),
+							string(name:'ClusterVar', value: 'autod')]
+					}
+				}
 			}
 		}
 	}
