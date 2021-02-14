@@ -16,7 +16,7 @@ pipeline {
 			parallel {
 				stage('Do NAS Smoke') {
 					steps {
-						build job: 'AutoD-DeployVMs', wait: true, parameters: [
+						build job: 'AutoD-DeployVMs', parameters: [
 							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
 							string(name: 'VMC', value: '1'),
 							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmnas"),
@@ -25,19 +25,19 @@ pipeline {
 				}
 				stage('Do SAN iSCSI Smoke') {
 					steps {
-						build job: 'AutoD-DeployVMs', wait: true, parameters: [
+						build job: 'AutoD-DeployVMs', parameters: [
 							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
 							string(name: 'VMC', value: '1'),
-							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmnas"),
+							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmsan"),
 							string(name:'ClusterVar', value: 'autod')]
 					}
 				}
 				stage('Do SAN iSCSI CHAP Smoke') {
 					steps {
-						build job: 'AutoD-DeployVMs', wait: true, parameters: [
+						build job: 'AutoD-DeployVMs', parameters: [
 							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
 							string(name: 'VMC', value: '1'),
-							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmnaschap"),
+							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmsanchap"),
 							string(name:'ClusterVar', value: 'autod')]
 					}
 				}
