@@ -12,6 +12,7 @@ pipeline {
 			}
 		}
 		stage('Do Smoke') {
+			when { expression { params.buildN != '' }}
 			parallel {
 				stage('Do NAS Smoke') {
 					steps {
