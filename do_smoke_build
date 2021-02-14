@@ -5,6 +5,7 @@ pipeline {
 	}
 	agent { label 'master' }
 	stages {
+		when { expression { params.buildN != '' }}
 		stage('Do PXE conf') {
 			steps {
 				build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: "${params.buildN}")]
@@ -17,7 +18,7 @@ pipeline {
 						build job: 'AutoD-DeployVMs', wait: true, parameters: [
 							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
 							string(name: 'VMC', value: '1'),
-							extendedChoice(name: 'Prefix', value: 'vmnas'),
+							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmnas"),
 							string(name:'ClusterVar', value: 'autod')]
 					}
 				}
@@ -26,7 +27,7 @@ pipeline {
 						build job: 'AutoD-DeployVMs', wait: true, parameters: [
 							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
 							string(name: 'VMC', value: '1'),
-							extendedChoice(name: 'Prefix', value: 'vmnas'),
+							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmnas"),
 							string(name:'ClusterVar', value: 'autod')]
 					}
 				}
@@ -35,7 +36,7 @@ pipeline {
 						build job: 'AutoD-DeployVMs', wait: true, parameters: [
 							extendedChoice(name: 'VM_FILTER', value: 'firecrest,Ubuntu18,Ubuntu20'),
 							string(name: 'VMC', value: '1'),
-							extendedChoice(name: 'Prefix', value: 'vmnaschap'),
+							extendedChoice(name: 'Prefix', value: "FCbuild-${params.buildN}-vmnaschap"),
 							string(name:'ClusterVar', value: 'autod')]
 					}
 				}

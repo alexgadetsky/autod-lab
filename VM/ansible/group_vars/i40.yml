@@ -11,8 +11,6 @@ datastore: "ns-nfs2"
 net_1Gbit: "VM Network"
 net_10Gbit: "DPortGroup"
 
-vm_name: "fc_vm_01"
-
 vmpref: "i40"
 ha_nodes_x11:
      nef_license: ''
@@ -67,12 +65,5 @@ pool1: "tankm1"
 pool2: "tankz2"
 pool3: "tank8"
 pool_for_shares: "{{ pool2 }}"
-pool_iscsi: "{{ pool3 }}"
-
-#CIFS Option
-cifs_user: "admin"
-cifs_passwd: "nexenta"
-#cifs_share: "{{ pool_for_shares }}_smb/smb-"
-cifs_share: "{{ pool_for_shares }}_cifs"
-cifs_vers: "2.1"
-
+pool_iscsi: "{{ pool2 }}"
+...

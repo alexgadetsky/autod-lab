@@ -88,20 +88,13 @@
          name: "/mnt/nas/smb2"
          state: mounted
      
-
-#     - name: Mount share NFSv4.1
-#       mount:
-#         name: "/mnt/nas/nfs41"
-#         src: "{{mut_ip}}:/data/nfs41"
-#         fstype: nfs
-#         opts: "rw,sync"
-#         state: mounted
- 
+     - set_fact:
+         fio_runtime: 1h
+             
      - name: Copy fio conf
        template:
          src: fio_nas.wk
          dest: /root/fio.wk
-
 
      - name: Run fio task
        shell: fio --output fio.log fio.wk

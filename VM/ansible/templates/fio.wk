@@ -4,7 +4,7 @@ randrepeat=1
 norandommap=1
 fallocate=none
 #runtime=1d
-runtime=24h
+runtime={{fio_runtime}}
 time_based
 #group_reporting
 #bs=4k,8k,16k,32k,64k,128k
