@@ -5,8 +5,8 @@ pipeline {
 	}
 	agent { label 'master' }
 	stages {
-		when { expression { params.buildN != '' }}
 		stage('Do PXE conf') {
+			when { expression { params.buildN != '' }}
 			steps {
 				build job: 'Firecrest_PXE_conf', wait: true, parameters: [string(name: 'BN', value: "${params.buildN}")]
 			}
