@@ -22,5 +22,7 @@ cifs_user: "admin"
 cifs_passwd: "nexenta"
 #cifs_share: "{{ pool_for_shares }}_smb/smb-"
 cifs_share: "{{ pool_for_shares }}_cifs"
-cifs_vers: "2.1"
+cifs_vers: '2.1'
+
+fio_runtime: '5h"
 ...

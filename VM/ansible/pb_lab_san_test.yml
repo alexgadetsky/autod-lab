@@ -128,9 +128,6 @@
      - set_fact:
          fio_size: 1G
              
-     - set_fact:
-         fio_runtime: 1h
-             
      - name: Copy fio conf
        template:
          src: fio.wk

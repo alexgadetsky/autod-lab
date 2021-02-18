@@ -88,9 +88,6 @@
          name: "/mnt/nas/smb2"
          state: mounted
      
-     - set_fact:
-         fio_runtime: 1h
-             
      - name: Copy fio conf
        template:
          src: fio_nas.wk
