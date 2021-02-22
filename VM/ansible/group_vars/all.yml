@@ -24,5 +24,5 @@ cifs_passwd: "nexenta"
 cifs_share: "{{ pool_for_shares }}_cifs"
 cifs_vers: '2.1'
 
-fio_runtime: '5h"
+fio_runtime: '5h'
 ...
