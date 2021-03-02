@@ -71,7 +71,7 @@ pipeline {
 							}
 						}
 					}
-					stage('ssh-copy-id') {
+/*					stage('ssh-copy-id') {
 						steps {
 							dir("${WORKSPACE1}/VM/ansible") {
 								ansiblePlaybook([
@@ -82,11 +82,11 @@ pipeline {
 								])
 							}
 						}
-					}
+					}*/
 					stage('Configure Linux VMs - hostname and packages') {
-						when {
-							expression { env.VM =~ 'Ubuntu'	}
-						}
+					//	when {
+					//		expression { env.VM =~ 'Ubuntu'	}
+					//	}
 						steps {
 							dir("${WORKSPACE1}/VM/ansible") {
 								ansiblePlaybook([
