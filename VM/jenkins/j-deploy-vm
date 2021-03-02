@@ -71,6 +71,18 @@ pipeline {
 							}
 						}
 					}
+					stage('ssh-copy-id') {
+						steps {
+							dir("${WORKSPACE1}/VM/ansible") {
+								ansiblePlaybook([
+									installation:   'ansible',
+									inventory:      "inv.${params.ClusterVar}.vmware.yml",
+									playbook:       'pb_lab_manage_vm_ssh_bind.yml',
+									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
+								])
+							}
+						}
+					}
 					stage('Configure Linux VMs - hostname and packages') {
 						when {
 							expression { env.VM =~ 'Ubuntu'	}
@@ -79,7 +91,7 @@ pipeline {
 							dir("${WORKSPACE1}/VM/ansible") {
 								ansiblePlaybook([
 									installation:   'ansible',
-									credentialsId:	'tcm-root',
+									//credentialsId:	'tcm-root',
 									inventory:      "inv.${params.ClusterVar}.vmware.yml",
 									playbook:       'pb_lab_manage_vm_hostname.yml',
 									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
@@ -98,7 +110,7 @@ pipeline {
 							dir("${WORKSPACE1}/VM/ansible") {
 								ansiblePlaybook([
 									installation:   'ansible',
-									credentialsId:	'tcm-root',
+									//credentialsId:	'tcm-root',
 									inventory:      "inv.${params.ClusterVar}.vmware.yml",
 									playbook:       'pb_lab_manage_io.yml',
 									extras:		"-e @group_vars/${params.ClusterVar}.yml -e vmtype=${params.Prefix} -l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
@@ -119,7 +131,7 @@ pipeline {
 				dir("${WORKSPACE1}/VM/ansible") {
 					ansiblePlaybook([
 						installation:   'ansible',
-						credentialsId:	'tcm-root',
+						//credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_nas_test.yml',
 						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-firecrest -l *${env.BUILD_ID}-${params.Prefix}*"
@@ -137,7 +149,7 @@ pipeline {
 				dir("${WORKSPACE1}/VM/ansible") {
 					ansiblePlaybook([
 						installation:   'ansible',
-						credentialsId:	'tcm-root',
+						//credentialsId:	'tcm-root',
 						inventory:      "inv.${params.ClusterVar}.vmware.yml",
 						playbook:       'pb_lab_san_test.yml',
 						extras:		"-e @group_vars/${params.ClusterVar}.yml -e mut=${env.BUILD_ID}-${params.Prefix}-firecrest -l *${env.BUILD_ID}-${params.Prefix}*"
