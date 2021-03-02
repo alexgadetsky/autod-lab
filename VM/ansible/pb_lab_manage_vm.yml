@@ -53,6 +53,7 @@
           memory_mb: 20480
           num_cpus: 4
           scsi: lsilogic
+	  version: latest
         networks:
         - name: "{{net_10Gbit}}"
           mac: "{{ MAC | community.general.random_mac }}"

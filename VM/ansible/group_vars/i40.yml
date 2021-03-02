@@ -1,12 +1,12 @@
-domain: "nexenta.local"
+domain: "hypernexenta.corp"
 
-vcenter_hostname: "vcenter.nexenta.local"
+vcenter_hostname: "vcenter67.hypernexenta.corp"
 vcenter_username: "Administrator@vsphere.local"
-vcenter_password: "Nexenta1!"
+vcenter_password: "Nexenta@123"
 
-datacenter: "SC"
-cluster: "i40"
-folder: "i40"
+datacenter: "qa_lab"
+cluster: "x11"
+folder: "x11"
 datastore: "ns-nfs2"
 net_1Gbit: "VM Network"
 net_10Gbit: "DPortGroup"
