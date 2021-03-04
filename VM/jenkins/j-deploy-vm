@@ -94,7 +94,7 @@ pipeline {
 									credentialsId:	'tcm-root',
 									inventory:      "inv.${params.ClusterVar}.vmware.yml",
 									playbook:       'pb_lab_manage_vm_hostname.yml',
-									extras:		"-l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
+									extras:		"-e vm_name=${env.BUILD_ID}-${params.Prefix}-${VM} -l *${env.BUILD_ID}-${params.Prefix}-${VM}*"
 								])
 							}
 						}
