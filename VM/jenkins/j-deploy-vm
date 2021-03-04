@@ -36,6 +36,7 @@ pipeline {
 	stages {
 		stage('GitClone') {
 			steps {
+				cleanWs()
 				script {
 					WORKSPACE1 = WORKSPACE
 				}
