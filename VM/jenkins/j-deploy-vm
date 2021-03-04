@@ -36,10 +36,11 @@ pipeline {
 	stages {
 		stage('GitClone') {
 			steps {
+				cleanWs()
 				script {
 					WORKSPACE1 = WORKSPACE
 				}
-				git branch: 'main', url: 'https://github.com/alexgadetsky/autod-lab.git'
+				git branch: 'test', url: 'https://github.com/alexgadetsky/autod-lab.git'
 			}
 		}
 		stage('DeployVMs') {
