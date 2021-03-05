@@ -9,6 +9,7 @@
     patt: "tcm"
     VMC: 1
     MAC: "{{MAC4}}"
+    vm_hw_v: 15
     vm_create_sleeper: []
   
   tasks:
@@ -18,6 +19,9 @@
         MAC: "{{ lookup('vars', MAC_j) }}"
     - set_fact:
         folder: "{{ vm_name.split(\"-\")[2] }}"
+    - set_fact:
+        vm_hw_v: 14
+      when: vm_name | regex_search('firecrest')
     - name: Create a FireCrest VM
       community.vmware.vmware_guest:
         hostname: "{{vcenter_hostname}}"
@@ -53,7 +57,7 @@
           memory_mb: 20480
           num_cpus: 4
           scsi: lsilogic
-          version: 15
+          version: "{{vm_hw_v}}"
         networks:
         - name: "{{net_10Gbit}}"
           mac: "{{ MAC | community.general.random_mac }}"
