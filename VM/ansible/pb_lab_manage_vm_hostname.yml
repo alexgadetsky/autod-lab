@@ -14,11 +14,11 @@
 
   - name: ssh-copy-id NexentaStor
     shell: "sshpass -p plusultra ssh-copy-id root@{{ansible_default_ipv4}}"
-    when: "(vm_state is not defined) and ((vm_name | regex_search('NS')))"
+    when: "(vm_state is not defined) and (vm_name | regex_search('NS'))"
 
   - name: ssh-copy-id Firecrest and Ubuntu
     shell: "sshpass -p nexenta ssh-copy-id root@{{ansible_default_ipv4}}"
-    when: "(vm_state is not defined) and (((vm_name | regex_search('firecrest'))) or (vm_name | regex_search('Ubuntu')))"
+    when: "(vm_state is not defined) and ((vm_name | regex_search('firecrest')) or (vm_name | regex_search('Ubuntu')))"
 
   - name: gather_facts
     setup:
