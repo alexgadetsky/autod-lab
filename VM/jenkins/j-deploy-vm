@@ -85,7 +85,7 @@ pipeline {
 							}
 						}
 					}*/
-					stage('Configure Linux VMs - hostname and packages') {
+/*					stage('Configure Linux VMs - hostname and packages') {
 					//	when {
 					//		expression { env.VM =~ 'Ubuntu'	}
 					//	}
@@ -100,7 +100,7 @@ pipeline {
 								])
 							}
 						}
-					}
+					}*/
 					stage('Configure Linux VMs - fsload and fio') {
 						when {
 							expression { 
