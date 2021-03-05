@@ -1,7 +1,7 @@
 ---
 - name: ssh-copy-id
-  gather_facts: true
-  hosts: localhost
+  gather_facts: false
+  hosts: all
   user: root
   vars_files:
      group_vars/all.yml
@@ -9,9 +9,11 @@
   tasks:
   - name: ssh-copy-id NexentaStor
     shell: "sshpass -p plusultra ssh-copy-id root@{{ vars['guest.ipAddress'] }}"
-    when: "(vm_state is not defined) and ((vm_name | regex_search('NS')))"
+    delegate_to: localhost
+    when: "(vm_state is not defined) and (vars['config.name'] | regex_search('NS'))"
 
   - name: ssh-copy-id Firecrest and Ubuntu
     shell: "sshpass -p nexenta ssh-copy-id root@{{ vars['guest.ipAddress'] }}"
-    when: "(vm_state is not defined) and (((vm_name | regex_search('firecrest'))) or (vm_name | regex_search('Ubuntu')))"
+    delegate_to: localhost
+    when: "(vm_state is not defined) and ((vars['config.name'] | regex_search('firecrest')) or (vars['config.name'] | regex_search('Ubuntu')))"
 ...
