@@ -25,6 +25,7 @@ pipeline {
 		text(name: 'VMC', description: 'VM count',	defaultValue: '1')
 //		text(name: 'Prefix', description: 'Grouping VMs', defaultValue: 'for-smth')
 		choice(name: 'ClusterVar', choices: ['autod','i40','krd'], description: '')
+		gitParameter branchFilter: 'origin.*/(.*)', defaultValue: 'main', name: 'BRANCH', type: 'PT_BRANCH'
 //		booleanParam(name: 'MUTisVM', defaultValue: false, description: '')
 //		booleanParam(name: 'useCHAP', defaultValue: false, description: '')
 
@@ -40,7 +41,7 @@ pipeline {
 				script {
 					WORKSPACE1 = WORKSPACE
 				}
-				git branch: 'test', url: 'https://github.com/alexgadetsky/autod-lab.git'
+				git url: 'https://github.com/alexgadetsky/autod-lab.git'
 			}
 		}
 		stage('DeployVMs') {
