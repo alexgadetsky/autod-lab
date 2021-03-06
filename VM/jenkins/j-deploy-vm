@@ -9,7 +9,7 @@ pipeline {
 			quoteValue: false,
 			saveJSONParameterToFile: false,
 			type: 'PT_CHECKBOX',
-			value: 'NS-530-FP1,NS-530,NS-521,firecrest,Ubuntu18,Ubuntu20',
+			value: 'NS-53-FP1,NS-530,NS-521,firecrest,Ubuntu18,Ubuntu20',
 			visibleItemCount: 5)
 		extendedChoice(
 			defaultValue: 'for-smth',
@@ -51,7 +51,7 @@ pipeline {
 				axes {
 					axis {
 						name 'VM'
-						values 'NS-530-FP1', 'NS-530', 'NS-521', 'firecrest', 'Ubuntu20', 'Ubuntu18'
+						values 'NS-53-FP1', 'NS-530', 'NS-521', 'firecrest', 'Ubuntu20', 'Ubuntu18'
 					}
 				}
 				stages {
